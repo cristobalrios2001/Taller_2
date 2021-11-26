@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package taller_2;
+package Logica;
+
+import Dominio.Paralelo;
 
 /**
  *
@@ -57,7 +59,7 @@ public class ListaParalelos {
         }
         return null;
     }
-    public Paralelo getElementoI(int posicion){
+    public Paralelo getPersonaI(int posicion){
         return listaParalelos[posicion];
     }
     

@@ -1,5 +1,5 @@
 
-package taller_2;
+package Logica;
 
 
 public class ListaPersonas {
@@ -50,7 +50,7 @@ public class ListaPersonas {
         }
         return null;
     }
-    public Persona getElementoI(int posicion){
+    public Persona getPersonaI(int posicion){
         return listaPersonas[posicion];
     }
 }

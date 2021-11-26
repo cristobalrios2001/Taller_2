@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package taller_2;
+package Logica;
 
 /**
  *
@@ -57,7 +57,7 @@ public class ListaAsignaturas {
         }
         return null;
     }
-    public Asignatura getElementoI(int posicion){
+    public Asignatura getPersonaI(int posicion){
         return listaAsignaturas[posicion];
     }
 }

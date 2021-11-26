@@ -3,7 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package taller_2;
+package Dominio;
+
+import Logica.ListaAsignaturas;
+import Logica.Persona;
 
 /**
  *
