@@ -16,7 +16,7 @@ public class AsignaturaObligatoria extends Asignatura{
     private int nivelEnMalla;
     private ListaParalelos listaParalelos;
 
-    public AsignaturaObligatoria( String codigo, String nombre, String creditos, int nivelEnMalla) {
+    public AsignaturaObligatoria( String codigo, String nombre, int creditos, int nivelEnMalla) {
         super(codigo, nombre, creditos);
         this.nivelEnMalla = nivelEnMalla;
     }

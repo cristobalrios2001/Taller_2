@@ -14,9 +14,9 @@ public interface SistemaUCR {
     
     public boolean ingresarProfesor (String rut, String correo,  String contraseña, int salario);
     
-    public boolean ingresarAsignaturaOpcional(String código, String nombre, int créditos, int cantCreditosPreRequisito);
+    public boolean ingresarAsignaturaOpcional(String código, String nombre, int creditos, int cantCreditosPreRequisito);
 
-    public boolean ingresarAsignaturaObligatoria(String código, String nombre,  int créditos, int nivelMalla);
+    public boolean ingresarAsignaturaObligatoria(String codigo, String nombre,  int creditos, int nivelMalla);
 
     public boolean ingresarParalelo(int numeroParalelo);
     

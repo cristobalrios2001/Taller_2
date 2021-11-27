@@ -12,12 +12,14 @@ package Logica;
 public class Asignatura {
     private String codigoAsignatura;
     private String nombre;
-    private String creditos;
+    private int creditos;
+    private int nota;
 
-    public Asignatura(String codigoAsignatura, String nombre, String creditos) {
+    public Asignatura(String codigoAsignatura, String nombre, int creditos) {
         this.codigoAsignatura = codigoAsignatura;
         this.nombre = nombre;
         this.creditos = creditos;
+        this.nota = nota;
     }
 
     public String getCodigoAsignatura() {
@@ -36,12 +38,20 @@ public class Asignatura {
         this.nombre = nombre;
     }
 
-    public String getCreditos() {
+    public int getCreditos() {
         return creditos;
     }
 
-    public void setCreditos(String creditos) {
+    public void setCreditos(int creditos) {
         this.creditos = creditos;
+    }
+
+    public int getNota() {
+        return nota;
+    }
+
+    public void setNota(int nota) {
+        this.nota = nota;
     }
     
     

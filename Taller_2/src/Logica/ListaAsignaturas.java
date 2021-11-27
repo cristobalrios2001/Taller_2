@@ -57,7 +57,7 @@ public class ListaAsignaturas {
         }
         return null;
     }
-    public Asignatura getPersonaI(int posicion){
+    public Asignatura getAsignaturaI(int posicion){
         return listaAsignaturas[posicion];
     }
 }

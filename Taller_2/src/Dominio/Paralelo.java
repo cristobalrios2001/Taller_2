@@ -15,9 +15,13 @@ public class Paralelo {
     private int numeroParalelo;
     private Profesor profesor;
     private Asignatura asignatura;
+    private int cupoParalelo; // cambio espacio en paralelo
 
     public Paralelo(int numeroParalelo) {
         this.numeroParalelo = numeroParalelo;
+        this.profesor = profesor;
+        this.asignatura = asignatura;
+        this.cupoParalelo =100; // cambio espacio en paralelo
     }
 
     public int getNumeroParalelo() {
@@ -43,6 +47,15 @@ public class Paralelo {
     public void setAsignatura(Asignatura asignatura) {
         this.asignatura = asignatura;
     }
+
+    public int getCupoParalelo() {  // cambio espacio en paralelo
+        return cupoParalelo;
+    }
+
+    public void setCupoParalelo(int cupoParalelo) {  // cambio espacio en paralelo
+        this.cupoParalelo = cupoParalelo;
+    }
+    
     
     
 }
