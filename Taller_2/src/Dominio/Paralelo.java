@@ -5,7 +5,8 @@
  */
 package Dominio;
 
-import Logica.Asignatura;
+
+import Logica.*;
 
 /**
  *
@@ -16,12 +17,15 @@ public class Paralelo {
     private Profesor profesor;
     private Asignatura asignatura;
     private int cupoParalelo; // cambio espacio en paralelo
+    private ListaPersonas listaPersonas; //lista de estudiantes maximo 100
 
     public Paralelo(int numeroParalelo) {
         this.numeroParalelo = numeroParalelo;
         this.profesor = profesor;
         this.asignatura = asignatura;
         this.cupoParalelo =100; // cambio espacio en paralelo
+        listaPersonas = new ListaPersonas(100); //lista de estudiantes maximo 100
+        
     }
 
     public int getNumeroParalelo() {
@@ -54,6 +58,14 @@ public class Paralelo {
 
     public void setCupoParalelo(int cupoParalelo) {  // cambio espacio en paralelo
         this.cupoParalelo = cupoParalelo;
+    }
+
+    public ListaPersonas getListaPersonas() {
+        return listaPersonas;
+    }
+
+    public void setListaPersonas(ListaPersonas listaPersonas) {
+        this.listaPersonas = listaPersonas;
     }
     
     

@@ -19,6 +19,7 @@ public class AsignaturaOpcional extends Asignatura {
     public AsignaturaOpcional(String codigo, String nombre, int creditos, int cantCreditosPreRequisito) {
         super(codigo, nombre, creditos);
         this.cantCreditosPreRequisito = cantCreditosPreRequisito;
+        listaParalelos = new ListaParalelos (10);
     }
 
     public int getCantCreditosPreRequisito() {

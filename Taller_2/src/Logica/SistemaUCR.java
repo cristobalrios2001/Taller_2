@@ -21,6 +21,8 @@ public interface SistemaUCR {
     public boolean ingresarParalelo(int numeroParalelo);
     
     public boolean ingresarAsociarAlumnoAsignatura(String rutAlumno, String codigoAsignatura, int notaFinal);
+    
+    public boolean ingresarAsociarAlumnoAsignaturaInscrita(String rutAlumno, String codigoAsignatura, int numeroParalelo);
 
     public boolean ingresarAsociarParaleoAsignaturaProfesor(int numeroParalelo, String codigoAsignatura, String rut);
 

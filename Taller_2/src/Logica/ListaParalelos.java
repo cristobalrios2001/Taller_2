@@ -59,7 +59,7 @@ public class ListaParalelos {
         }
         return null;
     }
-    public Paralelo getPersonaI(int posicion){
+    public Paralelo getParaleloI(int posicion){
         return listaParalelos[posicion];
     }
     

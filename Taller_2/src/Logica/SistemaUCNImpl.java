@@ -67,9 +67,18 @@ public class SistemaUCNImpl implements SistemaUCR {
             if(asig != null){
                 
                 if(p instanceof Alumno){
+                    int nivelAsigMin = 11;
                     
+                    if(asig instanceof AsignaturaObligatoria){
+                        if(nivelAsigMin > ((AsignaturaObligatoria) asig).getNivelEnMalla()){
+                            nivelAsigMin = ((AsignaturaObligatoria) asig).getNivelEnMalla();
+                        }
+                    }
+                    
+                   
                     asig.setNota(notaFinal);
-                    return ((Alumno) p).getListaAsignaturas().ingresar(asig);
+                    ((Alumno) p).setNivelAlumno(nivelAsigMin);
+                    return ((Alumno) p).getListaAsignaturasCursadas().ingresar(asig);
                     
                 }
                 
@@ -84,6 +93,8 @@ public class SistemaUCNImpl implements SistemaUCR {
         
         return false;
     }
+    
+    
 
     @Override
     public boolean ingresarAsociarParaleoAsignaturaProfesor(int numeroParalelo, String codigoAsignatura, String rut) {
@@ -114,13 +125,26 @@ public class SistemaUCNImpl implements SistemaUCR {
         salida += "Asignaturas disponibles: ";
         if(p!= null){
             Alumno a = (Alumno)p;
-            ListaAsignaturas laA = a.getListaAsignaturas();
+            ListaAsignaturas laACursadas = a.getListaAsignaturasCursadas();
             
-            for (int i = 0; i < laA.getCantAsignaturas(); i++) {
-                Asignatura asg = laA.getAsignaturaI(i);
+            for (int i = 0; i < listaAsignaturas.getCantAsignaturas(); i++) {
+                Asignatura asg = laACursadas.getAsignaturaI(i);
                 
-                if(!asg.getCodigoAsignatura().equals(listaAsignaturas.getAsignaturaI(i))){
-                    salida += "\n\tNombre asignatura: "+asg.getNombre()+ " ,Codigo" + asg.getCodigoAsignatura();
+                if(!asg.getCodigoAsignatura().equals(listaAsignaturas.getAsignaturaI(i).getCodigoAsignatura())){
+                    
+                    if(asg instanceof AsignaturaObligatoria){
+                        salida +="\nAsignaturas obligatorias";
+                        if(((AsignaturaObligatoria) asg).getNivelEnMalla()== a.getNivelAlumno()){
+                            salida += "\n\tNombre asignatura: "+asg.getNombre()+ " ,Codigo" + asg.getCodigoAsignatura();
+                        }
+                    }else if(asg instanceof AsignaturaOpcional){
+                        salida +="\nAsignaturas opcionales";
+                        if(((AsignaturaObligatoria) asg).getNivelEnMalla()> a.getNivelAlumno()){
+                            salida += "\n\tNombre asignatura: "+asg.getNombre()+ " ,Codigo" + asg.getCodigoAsignatura();
+                        }
+                    }
+                    
+                    
                 }
             }
             
@@ -169,25 +193,96 @@ public class SistemaUCNImpl implements SistemaUCR {
     }
 
     @Override
+    public boolean ingresarAsociarAlumnoAsignaturaInscrita(String rutAlumno, String codigoAsignatura, int numeroParalelo) {
+        
+    }
+    
+    
+    @Override
     public boolean inscribirAsignatura(String rut, String codigoAsignatura, int numeroParalelo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public String obtenerAsignaturaInscrita(String rut) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String salida = "";
+        
+        Persona p = listaPersonas.buscar(rut);
+        
+        if(p != null){
+            if(p instanceof Alumno){
+                Alumno a = (Alumno)p;
+                ListaAsignaturas laI = a.getListaAsignaturasInscritas();
+                if(laI.getCantAsignaturas() != 0){
+                    salida += "Asignaturas inscritas por "+a.getRutPersona()+":";
+                    for (int i = 0; i < laI.getCantAsignaturas(); i++) {
+                        Asignatura asig = laI.getAsignaturaI(i);
+                        salida +="\n\t Nombre Asignatura: "+ asig.getNombre() + " (Codigo: "+asig.getCodigoAsignatura()+")";
+                    }
+                }else{
+                    throw new NullPointerException("El alumno "+a.getRutPersona()+ " no tiene asignaturas inscritas");
+                }
+                
+            }
+        }else{
+            throw new NullPointerException ("La persona no existe");
+        }
+        return salida;
     }
 
     @Override
     public boolean eliminarAsignatura(String rut, String código) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Persona p = listaPersonas.buscar(rut);
+        
+        if(p != null){
+            if(p instanceof Alumno){               
+                Alumno alumno = (Alumno)p;
+                ListaAsignaturas laInsAlum = alumno.getListaAsignaturasInscritas();
+                Asignatura asig = laInsAlum.buscar(código);
+                
+                if(asig != null){
+                    return laInsAlum.eliminar(código);
+                }else{
+                    throw new NullPointerException("La Asignatura no esta inscrita por "+alumno.getRutPersona());
+                }
+            }
+            
+            
+        }else{
+            throw new NullPointerException("El alumno no existe");
+        }
+        return false;
     }
 
     @Override
     public String obtenerParalelosProfesor(String rut) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String salida = "";
+        Persona persona = listaPersonas.buscar(rut);
+        
+        if(persona != null){
+            if(persona instanceof Profesor){
+                Profesor profesor =(Profesor) persona;
+                
+                ListaParalelos lParalelosProf = profesor.getListaParalelos();
+                
+                if(lParalelosProf.getCantParalelos() !=0){
+                    salida += "\nParalelos profesor "+ profesor.getRutPersona()+ ": ";
+                    for (int i = 0; i < lParalelosProf.getCantParalelos(); i++) {
+                        Paralelo paralelo = lParalelosProf.getParaleloI(i);
+                        salida += "\n\tNumero paralelo: "+ paralelo.getNumeroParalelo()+" (Asignatura: "+paralelo.getAsignatura().getNombre()+")";
+                    }
+                }else{
+                    throw new NullPointerException("El profesor "+profesor.getRutPersona()+", no tiene paralelos");
+                }
+            }
+        }else{
+            throw new NullPointerException("La persona no existe !");
+        }
+        return salida;
     }
 
+    
+    // REVISAR DEL WORD PQ ESTA REPETIDO
     @Override
     public String obtenerParalelosProfesor(String rut, int numeroParalelo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -212,5 +307,7 @@ public class SistemaUCNImpl implements SistemaUCR {
     public boolean eliminarAlumno() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    
     
 }
