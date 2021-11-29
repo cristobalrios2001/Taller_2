@@ -290,7 +290,27 @@ public class SistemaUCNImpl implements SistemaUCR {
 
     @Override
     public String obtenerAlumnosParalelosProfesor(String rut, int numeroParalelo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Persona p = listaPersonas.buscar(rut);
+        
+        if(p!= null){
+            if(p instanceof Profesor){
+                Profesor profesor = (Profesor)p;
+                ListaParalelos lpProfe = profesor.getListaParalelos();
+                
+                Paralelo paraleloP = lpProfe.buscar(numeroParalelo);
+                
+                if(paraleloP != null){
+                    
+                }else{
+                    throw new NullPointerException("El profesor "+profesor.getRutPersona()+" ,no tiene paralelos");
+                }
+                
+                
+            }
+            
+        }else{
+            throw new NullPointerException("La persona no existe !");
+        }
     }
 
     @Override
