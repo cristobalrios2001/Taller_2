@@ -14,15 +14,15 @@ public interface SistemaUCR {
     
     public boolean ingresarProfesor (String rut, String correo,  String contraseña, int salario);
     
-    public boolean ingresarAsignaturaOpcional(String código, String nombre, int creditos, int cantCreditosPreRequisito);
+    public boolean ingresarAsignaturaObligatoria(String codigo, String nombre, int creditos, int nivelMalla, int cantAsigPre, String asigPre);
 
-    public boolean ingresarAsignaturaObligatoria(String codigo, String nombre,  int creditos, int nivelMalla);
+    public boolean ingresarAsignaturaOpcional(String codigo, String nombre, int creditos, int cantCreditosPreRequisito);
 
     public boolean ingresarParalelo(int numeroParalelo);
     
     public boolean ingresarAsociarAlumnoAsignatura(String rutAlumno, String codigoAsignatura, int notaFinal);
     
-    public boolean ingresarAsociarAlumnoAsignaturaInscrita(String rutAlumno, String codigoAsignatura, int numeroParalelo);
+   
 
     public boolean ingresarAsociarParaleoAsignaturaProfesor(int numeroParalelo, String codigoAsignatura, String rut);
 
@@ -30,7 +30,7 @@ public interface SistemaUCR {
 
     public String obtenerParalelosDisponibles(String codigoAsignaturas);
 
-    public boolean insertarAsignaturaInscrita (String rut, String codigoAsignatura, int numeroParalelo);
+    
 
     public boolean inscribirAsignatura(String rut, String codigoAsignatura, int numeroParalelo);
 
@@ -40,7 +40,7 @@ public interface SistemaUCR {
 
     public String obtenerParalelosProfesor(String rut);
 
-    public String obtenerParalelosProfesor(String rut, int numeroParalelo);
+    
 
     public String obtenerAlumnosParalelosProfesor(String rut, int numeroParalelo);
     

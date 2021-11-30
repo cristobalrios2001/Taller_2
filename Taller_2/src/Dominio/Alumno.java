@@ -14,6 +14,7 @@ import Logica.Persona;
  */
 public class Alumno extends Persona{
     private int nivelAlumno;
+    private int TotalCreditos;
     private ListaAsignaturas listaAsignaturasCursadas;
     private ListaAsignaturas listaAsignaturasInscritas;
     
@@ -21,6 +22,7 @@ public class Alumno extends Persona{
     public Alumno( String rut, String correo, String contraseña, int nivelAlumno) {
         super(rut, correo, contraseña);
         this.nivelAlumno = nivelAlumno;
+        this.TotalCreditos = 0;
         listaAsignaturasInscritas = new ListaAsignaturas (12);
         listaAsignaturasCursadas = new ListaAsignaturas (30);
     }
@@ -49,13 +51,15 @@ public class Alumno extends Persona{
         this.listaAsignaturasInscritas = listaAsignaturasInscritas;
     }
 
-    public ListaAsignaturas getListaAsignaturas() {
-        return listaAsignaturas;
+    public int getTotalCreditos() {
+        return TotalCreditos;
     }
 
-    public void setListaAsignaturas(ListaAsignaturas listaAsignaturas) {
-        this.listaAsignaturas = listaAsignaturas;
+    public void setTotalCreditos(int TotalCreditos) {
+        this.TotalCreditos = TotalCreditos;
     }
+
+    
     
     
 }

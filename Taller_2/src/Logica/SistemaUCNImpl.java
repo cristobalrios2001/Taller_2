@@ -42,10 +42,23 @@ public class SistemaUCNImpl implements SistemaUCR {
     }
 
     @Override
-    public boolean ingresarAsignaturaObligatoria(String codigo, String nombre, int creditos, int nivelMalla) {
-        Asignatura asignaturaObligatoria = new AsignaturaObligatoria(codigo, nombre, creditos, nivelMalla);
+    public boolean ingresarAsignaturaObligatoria(String codigo, String nombre, int creditos, int nivelMalla, int cantAsigPre, String asigPre) {
+        Asignatura asignaturaObligatoria = new AsignaturaObligatoria(codigo, nombre, creditos, nivelMalla, cantAsigPre);
+        
         
         return listaAsignaturas.ingresar(asignaturaObligatoria);
+    }
+    
+    public boolean asociarCodigoAsignaturaObligatoria(String codigo,String codigoAsigPre){
+        Asignatura asignatura = listaAsignaturas.buscar(codigo);
+        boolean ingreso = false;
+        
+        if(asignatura instanceof AsignaturaObligatoria){
+            AsignaturaObligatoria asigOb = (AsignaturaObligatoria) asignatura;
+            
+            ingreso =  asigOb.ingresarAsigPreReq(codigoAsigPre);
+        }
+        return ingreso;
     }
 
     @Override
@@ -54,8 +67,8 @@ public class SistemaUCNImpl implements SistemaUCR {
         
         return listaParalelos.ingresar(paralelo);
     }
-
-    @Override
+    
+    @Override 
     public boolean ingresarAsociarAlumnoAsignatura(String rutAlumno, String codigoAsignatura, int notaFinal) {
         Persona p = listaPersonas.buscar(rutAlumno);
         
@@ -74,8 +87,6 @@ public class SistemaUCNImpl implements SistemaUCR {
                             nivelAsigMin = ((AsignaturaObligatoria) asig).getNivelEnMalla();
                         }
                     }
-                    
-                   
                     asig.setNota(notaFinal);
                     ((Alumno) p).setNivelAlumno(nivelAsigMin);
                     return ((Alumno) p).getListaAsignaturasCursadas().ingresar(asig);
@@ -143,12 +154,8 @@ public class SistemaUCNImpl implements SistemaUCR {
                             salida += "\n\tNombre asignatura: "+asg.getNombre()+ " ,Codigo" + asg.getCodigoAsignatura();
                         }
                     }
-                    
-                    
                 }
             }
-            
-            
         }else{
             throw new NullPointerException("La persona no existe");
         }
@@ -163,13 +170,12 @@ public class SistemaUCNImpl implements SistemaUCR {
         if(asig != null){
             salida +="Los paralelos disponibles son: ";
             for (int i = 0; i < listaParalelos.getCantParalelos(); i++) {
-                Paralelo p = listaParalelos.getPersonaI(i);
+                Paralelo p = listaParalelos.getParaleloI(i);
                 if(p.getCupoParalelo()!=0){
                     if(p.getAsignatura().getCodigoAsignatura().equals(asig.getCodigoAsignatura())){
                         salida +="\n\t"+p.getNumeroParalelo();
                     }
                 }
-                
             }
             
         }else{
@@ -178,29 +184,60 @@ public class SistemaUCNImpl implements SistemaUCR {
         return salida;
     }
 
-    @Override
-    public boolean insertarAsignaturaInscrita(String rut, String codigoAsignatura, int numeroParalelo) {
-        Persona p = listaPersonas.buscar(rut);
-        
-        // VERIFICAR SI LA ASIGNATURA ES OBLIGATORIA O OPCIONAL Y VER LOS CREDITOS
-        
-        if(p!= null){
-            if(p instanceof Alumno){
-                Asignatura asignatura = listaAsignaturas.buscar(codigoAsignatura);
-                ((Alumno) p).getListaAsignaturas().ingresar(asignatura);
-            }
-        }
-    }
-
-    @Override
-    public boolean ingresarAsociarAlumnoAsignaturaInscrita(String rutAlumno, String codigoAsignatura, int numeroParalelo) {
-        
-    }
     
     
+   
     @Override
     public boolean inscribirAsignatura(String rut, String codigoAsignatura, int numeroParalelo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Persona persona = listaPersonas.buscar(rut);
+        
+        if(persona != null){
+            if(persona instanceof Alumno){
+                Alumno alum = (Alumno) persona;
+                Asignatura asig = listaAsignaturas.buscar(codigoAsignatura);
+                
+                if(asig != null){
+                    if(asig instanceof AsignaturaObligatoria){
+                        AsignaturaObligatoria asigOblig = (AsignaturaObligatoria)asig;
+                        int cantPreReq = asigOblig.getCantAsigPre();
+                        
+                        for (int j = 0; j < asigOblig.getCantAsigPre(); j++) {
+                            for (int i = 0; i < alum.getListaAsignaturasCursadas().getCantAsignaturas(); i++) {
+                                if(asigOblig.getAsigPreI(j).equals(alum.getListaAsignaturasCursadas().getAsignaturaI(i).getCodigoAsignatura())){
+                                    cantPreReq -=1;
+                                }
+                            }
+                        }
+                        
+                        if (cantPreReq == 0){
+                            alum.getListaAsignaturasInscritas().ingresar(asigOblig);
+                            listaParalelos.buscar(numeroParalelo).getListaPersonas().ingresar(alum);
+                            
+                            return true;
+                        }
+                        
+                    }
+                    
+                    else if(asig instanceof AsignaturaOpcional){
+                        AsignaturaOpcional asigObpc = (AsignaturaOpcional)asig;
+                        if(alum.getTotalCreditos() <= asigObpc.getCantCreditosPreRequisito()){
+
+                           alum.getListaAsignaturasInscritas().ingresar(asigObpc);
+                           listaParalelos.buscar(numeroParalelo).getListaPersonas().ingresar(alum);
+                           alum.setTotalCreditos(alum.getTotalCreditos()-asigObpc.getCantCreditosPreRequisito());
+                           return true;
+                        }
+                         
+                    }
+                    
+                }else{
+                    throw new NullPointerException("La asignatura no existe");
+                }               
+            }
+        }else{
+            throw new NullPointerException("La persona no existe !");
+        }
+        return false;
     }
 
     @Override
@@ -281,17 +318,30 @@ public class SistemaUCNImpl implements SistemaUCR {
         return salida;
     }
 
+    //arreglar contrato, en vez de buscar que coincida la asignatura, recorrer el paralelo donde esta el profesor
     
-    // REVISAR DEL WORD PQ ESTA REPETIDO
-    @Override
-    public String obtenerParalelosProfesor(String rut, int numeroParalelo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
     @Override
     public String obtenerAlumnosParalelosProfesor(String rut, int numeroParalelo) {
-        Persona p = listaPersonas.buscar(rut);
+        Persona p = listaPersonas.buscar(rut); // se puede borrar pq se buscar el paralelo y se recorre su lista de personas
+        String salida = "";
+        salida += "\nAlumnos del paralelo "+numeroParalelo;
+        Paralelo paralelo = listaParalelos.buscar(numeroParalelo);
+        ListaPersonas lpersonas = paralelo.getListaPersonas();
+        if(lpersonas.getCantPersonas()!=0){
+            for (int i = 0; i < lpersonas.getCantPersonas(); i++) {
+                Persona persona = lpersonas.getPersonaI(i);
+
+                if(persona instanceof Alumno){
+                    Alumno alumno = (Alumno) persona;
+                    salida += "\n\tAlumno: "+alumno.getRutPersona();
+                }
+            }
+        }else{
+            salida+= "Este paralelo no tiene alumnos inscritos !";
+        }
         
+        
+        /*
         if(p!= null){
             if(p instanceof Profesor){
                 Profesor profesor = (Profesor)p;
@@ -300,33 +350,106 @@ public class SistemaUCNImpl implements SistemaUCR {
                 Paralelo paraleloP = lpProfe.buscar(numeroParalelo);
                 
                 if(paraleloP != null){
+                    for (int i = 0; i < listaPersonas.getCantPersonas(); i++) {
+                        Persona persona = listaPersonas.getPersonaI(i);
+                        
+                        if(persona instanceof Alumno){
+                            Alumno alumno = (Alumno) persona;
+                            ListaAsignaturas laAsig = alumno.getListaAsignaturasInscritas();
+                            
+                            for (int j = 0; j < laAsig.getCantAsignaturas(); j++) {
+                                if(paraleloP.getAsignatura().getCodigoAsignatura().equals(laAsig.getAsignaturaI(i).getCodigoAsignatura())){
+                                    salida += "\n\tAlumno: "+ alumno.getRutPersona();
+                                }
+                            }
+                        }
+                    }
                     
                 }else{
                     throw new NullPointerException("El profesor "+profesor.getRutPersona()+" ,no tiene paralelos");
+                }                
+            }            
+        }else{
+            throw new NullPointerException("La persona no existe !");
+        }
+        */
+        return salida;
+    }
+
+    @Override
+    public boolean ingresarNotaFinal(String codigoAsignatura, String rut, int notaFinal) {
+        Persona persona = listaPersonas.buscar(rut);
+        
+        if(persona != null){
+            if(persona instanceof Alumno){
+                Alumno alumno = (Alumno) persona;
+                ListaAsignaturas laInsAlum = alumno.getListaAsignaturasInscritas();
+            
+                Asignatura asig = laInsAlum.buscar(codigoAsignatura);
+            
+                if(asig != null){
+                    asig.setNota(notaFinal);
+                    return true;
+                }else{
+                    throw new NullPointerException("La asignatura no existe !");
                 }
-                
-                
             }
             
         }else{
             throw new NullPointerException("La persona no existe !");
         }
-    }
-
-    @Override
-    public boolean ingresarNotaFinal(String codigoAsignatura, String rut, int notaFinal) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return false;
     }
 
     @Override
     public boolean comprobarNotaFinalAsignaturas(String codigoAsignatura, String rut) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Persona persona = listaPersonas.buscar(rut);
+        
+        if(persona != null){
+            if(persona instanceof Alumno){
+                Alumno alumno = (Alumno) persona;
+                ListaAsignaturas laInsAlum = alumno.getListaAsignaturasInscritas();
+                
+                Asignatura asig = laInsAlum.buscar(codigoAsignatura);
+                
+                if(asig != null){
+                    if(asig.getNota()>3.95){
+                        alumno.getListaAsignaturasCursadas().ingresar(asig);
+                        laInsAlum.eliminar(codigoAsignatura);
+                        return true;
+                    }
+                    
+                }else{
+                    throw new NullPointerException("La asignatura no existe !");
+                }
+            }
+        }else{
+            throw new NullPointerException("La persona no existe !");
+        }
+        return false;
     }
 
     @Override
     public boolean eliminarAlumno() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (int i = 0; i < listaPersonas.getCantPersonas(); i++) {
+            Persona persona = listaPersonas.getPersonaI(i);
+            
+            if(persona instanceof Alumno){
+                Alumno alumno = (Alumno) persona;
+                
+                if(alumno.getNivelAlumno() == 10){
+                    listaPersonas.eliminar(alumno.getRutPersona());
+                    return true;
+                }
+            }
+        }
+        return false;
     }
+
+
+    
+
+    
 
     
     

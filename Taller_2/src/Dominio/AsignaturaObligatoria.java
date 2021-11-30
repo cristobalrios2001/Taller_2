@@ -8,18 +8,19 @@ package Dominio;
 import Logica.Asignatura;
 import Logica.ListaParalelos;
 
-/**
- *
- * @author crist
- */
+
 public class AsignaturaObligatoria extends Asignatura{
     private int nivelEnMalla;
     private ListaParalelos listaParalelos;
+    private String [] asigPre;
+    private int cantAsigPre;
+    
 
-    public AsignaturaObligatoria( String codigo, String nombre, int creditos, int nivelEnMalla) {
+    public AsignaturaObligatoria( String codigo, String nombre, int creditos, int nivelEnMalla, int cantAsigPre) {
         super(codigo, nombre, creditos);
         this.nivelEnMalla = nivelEnMalla;
         listaParalelos = new ListaParalelos (1);
+        asigPre = new String[cantAsigPre];
     }
 
     public int getNivelEnMalla() {
@@ -37,7 +38,21 @@ public class AsignaturaObligatoria extends Asignatura{
     public void setListaParalelos(ListaParalelos listaParalelos) {
         this.listaParalelos = listaParalelos;
     }
-
     
+    public boolean ingresarAsigPreReq(String asignaturaPreReq){
+        if(cantAsigPre<asigPre.length){
+            asigPre[cantAsigPre]=asignaturaPreReq;
+            cantAsigPre++;
+            return true;
+        }
+        return false;
+    }
     
+    public String getAsigPreI(int i){
+        return asigPre[i];
+    }
+    
+    public int getCantAsigPre(){
+        return cantAsigPre;
+    }
 }

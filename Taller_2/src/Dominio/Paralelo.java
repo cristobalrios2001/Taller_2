@@ -25,7 +25,7 @@ public class Paralelo {
         this.asignatura = asignatura;
         this.cupoParalelo =100; // cambio espacio en paralelo
         listaPersonas = new ListaPersonas(100); //lista de estudiantes maximo 100
-        
+            
     }
 
     public int getNumeroParalelo() {
