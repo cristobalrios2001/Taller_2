@@ -13,7 +13,7 @@ public class Asignatura {
     private String codigoAsignatura;
     private String nombre;
     private int creditos;
-    private int nota;
+    private Double nota;
 
     public Asignatura(String codigoAsignatura, String nombre, int creditos) {
         this.codigoAsignatura = codigoAsignatura;
@@ -46,11 +46,11 @@ public class Asignatura {
         this.creditos = creditos;
     }
 
-    public int getNota() {
+    public Double getNota() {
         return nota;
     }
 
-    public void setNota(int nota) {
+    public void setNota(Double nota) {
         this.nota = nota;
     }
     

@@ -19,7 +19,7 @@ public class Alumno extends Persona{
     private ListaAsignaturas listaAsignaturasInscritas;
     
 
-    public Alumno( String rut, String correo, String contraseña, int nivelAlumno) {
+    public Alumno( String rut, String correo, int nivelAlumno, String contraseña) {
         super(rut, correo, contraseña);
         this.nivelAlumno = nivelAlumno;
         this.TotalCreditos = 0;

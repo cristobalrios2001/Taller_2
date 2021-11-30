@@ -21,8 +21,8 @@ public class SistemaUCNImpl implements SistemaUCR {
     
 
     @Override
-    public boolean ingresarAlumno(String rut, String correo, String contraseña) {
-        Persona alumno = new Alumno (rut, correo, contraseña,0);
+    public boolean ingresarAlumno(String rut, String correo,int nivelAlumno, String contraseña) {
+        Persona alumno = new Alumno (rut, correo,nivelAlumno, contraseña);
         
         return listaPersonas.ingresar(alumno);
     }
@@ -42,13 +42,16 @@ public class SistemaUCNImpl implements SistemaUCR {
     }
 
     @Override
-    public boolean ingresarAsignaturaObligatoria(String codigo, String nombre, int creditos, int nivelMalla, int cantAsigPre, String asigPre) {
+    public boolean ingresarAsignaturaObligatoria(String codigo, String nombre, int creditos, int nivelMalla, int cantAsigPre) {
         Asignatura asignaturaObligatoria = new AsignaturaObligatoria(codigo, nombre, creditos, nivelMalla, cantAsigPre);
         
         
         return listaAsignaturas.ingresar(asignaturaObligatoria);
     }
     
+    
+    
+    @Override
     public boolean asociarCodigoAsignaturaObligatoria(String codigo,String codigoAsigPre){
         Asignatura asignatura = listaAsignaturas.buscar(codigo);
         boolean ingreso = false;
@@ -69,7 +72,7 @@ public class SistemaUCNImpl implements SistemaUCR {
     }
     
     @Override 
-    public boolean ingresarAsociarAlumnoAsignatura(String rutAlumno, String codigoAsignatura, int notaFinal) {
+    public boolean ingresarAsociarAlumnoAsignaturaCursada(String rutAlumno, String codigoAsignatura, Double notaFinal) {
         Persona p = listaPersonas.buscar(rutAlumno);
         
         
@@ -105,7 +108,35 @@ public class SistemaUCNImpl implements SistemaUCR {
         return false;
     }
     
-    
+    @Override 
+    public boolean ingresarAsociarAlumnoAsignaturaInscrita(String rutAlumno, String codigoAsignatura, int numeroParalelo) {
+        Persona p = listaPersonas.buscar(rutAlumno);
+        
+        if(p != null){
+            Asignatura asig = listaAsignaturas.buscar(codigoAsignatura);
+            
+            if(asig != null){
+                
+                if(p instanceof Alumno){
+                    ((Alumno) p).getListaAsignaturasInscritas().ingresar(asig);
+                    
+                    Paralelo paralelo = listaParalelos.buscar(numeroParalelo);
+                    
+                    paralelo.getListaPersonas().ingresar(p);
+                   
+                }
+                
+            }else{
+                throw new NullPointerException("La asignatura no existe");
+            }
+            
+            
+        }else{
+            throw new NullPointerException("La persona no existe");
+        }
+        
+        return false;
+    }
 
     @Override
     public boolean ingresarAsociarParaleoAsignaturaProfesor(int numeroParalelo, String codigoAsignatura, String rut) {
@@ -135,27 +166,28 @@ public class SistemaUCNImpl implements SistemaUCR {
         String salida = "";
         salida += "Asignaturas disponibles: ";
         if(p!= null){
-            Alumno a = (Alumno)p;
-            ListaAsignaturas laACursadas = a.getListaAsignaturasCursadas();
-            
-            for (int i = 0; i < listaAsignaturas.getCantAsignaturas(); i++) {
-                Asignatura asg = laACursadas.getAsignaturaI(i);
-                
-                if(!asg.getCodigoAsignatura().equals(listaAsignaturas.getAsignaturaI(i).getCodigoAsignatura())){
-                    
-                    if(asg instanceof AsignaturaObligatoria){
-                        salida +="\nAsignaturas obligatorias";
-                        if(((AsignaturaObligatoria) asg).getNivelEnMalla()== a.getNivelAlumno()){
-                            salida += "\n\tNombre asignatura: "+asg.getNombre()+ " ,Codigo" + asg.getCodigoAsignatura();
+            if(p instanceof Alumno){
+                Alumno alumno = (Alumno)p;
+                ListaAsignaturas lAsigAlumIns = alumno.getListaAsignaturasInscritas();
+                ListaAsignaturas lAsigAlumCurs = alumno.getListaAsignaturasCursadas();
+                for (int i = 0; i < listaAsignaturas.getCantAsignaturas(); i++) {
+                    Asignatura asignaturaG = listaAsignaturas.getAsignaturaI(i);                    
+                    if(asignaturaG instanceof AsignaturaObligatoria){
+                        AsignaturaObligatoria asigOb = (AsignaturaObligatoria)asignaturaG;
+                        for (int j = 0; j < lAsigAlumCurs.getCantAsignaturas(); j++) {
+                            if()
                         }
-                    }else if(asg instanceof AsignaturaOpcional){
-                        salida +="\nAsignaturas opcionales";
-                        if(((AsignaturaObligatoria) asg).getNivelEnMalla()> a.getNivelAlumno()){
-                            salida += "\n\tNombre asignatura: "+asg.getNombre()+ " ,Codigo" + asg.getCodigoAsignatura();
-                        }
+                        
+                        
+                        
+                    }
+                    else if(asignaturaG instanceof AsignaturaOpcional){
+                        
                     }
                 }
+                
             }
+            
         }else{
             throw new NullPointerException("La persona no existe");
         }
@@ -377,7 +409,7 @@ public class SistemaUCNImpl implements SistemaUCR {
     }
 
     @Override
-    public boolean ingresarNotaFinal(String codigoAsignatura, String rut, int notaFinal) {
+    public boolean ingresarNotaFinal(String codigoAsignatura, String rut, Double notaFinal) {
         Persona persona = listaPersonas.buscar(rut);
         
         if(persona != null){
