@@ -5,6 +5,8 @@
  */
 package Logica;
 
+import Dominio.Paralelo;
+
 /**
  *
  * @author crist
@@ -14,12 +16,14 @@ public class Asignatura {
     private String nombre;
     private int creditos;
     private Double nota;
+    private Paralelo paralelo;
 
     public Asignatura(String codigoAsignatura, String nombre, int creditos) {
         this.codigoAsignatura = codigoAsignatura;
         this.nombre = nombre;
         this.creditos = creditos;
-        this.nota = nota;
+        nota = null;
+        paralelo = null;
     }
 
     public String getCodigoAsignatura() {
@@ -54,6 +58,12 @@ public class Asignatura {
         this.nota = nota;
     }
     
-    
+     public Paralelo getParalelo() {
+        return paralelo;
+    }
+
+    public void setParalelo(Paralelo paralelo) {
+        this.paralelo = paralelo;
+    }
     
 }

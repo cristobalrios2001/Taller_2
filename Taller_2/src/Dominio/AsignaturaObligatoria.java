@@ -10,16 +10,16 @@ import Logica.ListaParalelos;
 
 
 public class AsignaturaObligatoria extends Asignatura{
-    private int nivelEnMalla;
-    private ListaParalelos listaParalelos;
+    private int nivelEnMalla;    
     private String [] asigPre;
     private int cantAsigPre;
+    
     
 
     public AsignaturaObligatoria( String codigo, String nombre, int creditos, int nivelEnMalla, int cantAsigPre) {
         super(codigo, nombre, creditos);
         this.nivelEnMalla = nivelEnMalla;
-        listaParalelos = new ListaParalelos (1);
+        
         asigPre = new String[cantAsigPre];
     }
 
@@ -31,13 +31,6 @@ public class AsignaturaObligatoria extends Asignatura{
         this.nivelEnMalla = nivelEnMalla;
     }
 
-    public ListaParalelos getListaParalelos() {
-        return listaParalelos;
-    }
-
-    public void setListaParalelos(ListaParalelos listaParalelos) {
-        this.listaParalelos = listaParalelos;
-    }
     
     public boolean ingresarAsigPreReq(String asignaturaPreReq){
         if(cantAsigPre<asigPre.length){
@@ -55,4 +48,16 @@ public class AsignaturaObligatoria extends Asignatura{
     public int getCantAsigPre(){
         return cantAsigPre;
     }
+
+    public String[] getAsigPre() {
+        return asigPre;
+    }
+
+    public void setAsigPre(String[] asigPre) {
+        this.asigPre = asigPre;
+    }
+
+   
+    
+    
 }

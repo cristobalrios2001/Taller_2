@@ -23,7 +23,7 @@ public class Paralelo {
         this.numeroParalelo = numeroParalelo;
         this.profesor = profesor;
         this.asignatura = asignatura;
-        this.cupoParalelo =100; // cambio espacio en paralelo
+        this.cupoParalelo =0; // cambio espacio en paralelo
         listaPersonas = new ListaPersonas(100); //lista de estudiantes maximo 100
             
     }
