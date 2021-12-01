@@ -162,51 +162,51 @@ public class SistemaUCNImpl implements SistemaUCR {
 
     @Override
     public String obtenerAsignaturasDisponiblesObligatorias(String rut) {
+        String dato = "";
         Persona p = listaPersonas.buscar(rut);
-        String salida = "";
-        salida += "Asignaturas disponibles: ";
-        if(p!= null){
-            if(p instanceof Alumno){
-                Alumno alumno = (Alumno)p;
-                
-                ListaAsignaturas listaAsigCurs = alumno.getListaAsignaturasCursadas();   
-                ListaAsignaturas listaAsigIns = alumno.getListaAsignaturasInscritas();
-                for (int i = 0; i < listaAsignaturas.getCantAsignaturas(); i++) {
-                    Asignatura asigGen = listaAsignaturas.getAsignaturaI(i);
-                    if(asigGen instanceof AsignaturaObligatoria){
-                        AsignaturaObligatoria asigObGen = (AsignaturaObligatoria) asigGen;
-                        for (int j = 0; j < listaAsigCurs.getCantAsignaturas(); j++) {
-                            Asignatura asigAlumCurs = listaAsigCurs.getAsignaturaI(j);
-                            if(asigAlumCurs instanceof AsignaturaObligatoria){
-                                AsignaturaObligatoria asigObAlumCurs = (AsignaturaObligatoria) asigAlumCurs;
-                                
-                                if((asigObGen.getCodigoAsignatura().equals(asigObAlumCurs.getCodigoAsignatura())) && asigObAlumCurs.getNota()<3.95){
-                                    
-                                }
-                            }
+        if(p != null && p instanceof Alumno) {
+            Alumno estudiante = (Alumno)p;
+            for(int i=0;i<listaAsignaturas.getCantAsignaturas();i++) {
+                Asignatura asig = listaAsignaturas.getAsignaturaI(i);
+                if(asig instanceof AsignaturaObligatoria ) {
+                    AsignaturaObligatoria asigOb = (AsignaturaObligatoria)asig;
+                    int j;
+                    boolean reconocida = true;
+                    for(j=0;j<estudiante.getListaAsignaturasInscritas().getCantAsignaturas();j++) {
+                        Asignatura asigIns = estudiante.getListaAsignaturasInscritas().getAsignaturaI(j);
+                        if(asigOb.getCodigoAsignatura().equals(asigIns.getCodigoAsignatura())) {
+                            reconocida = false;
+                            break;
                         }
-                        
-                        
-                        for (int k = 0; k < listaAsigIns.getCantAsignaturas(); k++) {
-                            Asignatura asigAlumIns = listaAsigIns.getAsignaturaI(k);
-                            if(asigAlumIns instanceof AsignaturaObligatoria){
-                                AsignaturaObligatoria asigObAlumIns = (AsignaturaObligatoria) asigAlumIns;
-                                
-                                if(!asigObGen.getCodigoAsignatura().equals(asigObAlumIns.getCodigoAsignatura())){
-                                    salida += "\n\t"+asigObGen.getCodigoAsignatura();
+                    }
+                    if(reconocida && asigOb.getNivelEnMalla()<= estudiante.getNivelAlumno() ) {
+                        dato+= asigOb.getCodigoAsignatura()+", "+asigOb.getNombre()+" ,"+asigOb.getCreditos()+" ,"+asigOb.getNivelEnMalla()+", "+asigOb.getCantAsigPre()+", ";
+                        for(int k=0;k<asigOb.getCantAsigPre();k++) {
+                            dato+= asigOb.getAsigPreI(k)+",";
+                        }
+                        //System.out.println(estudiante.getNivelAlumno());
+                    }
+                    if(j==estudiante.getListaAsignaturasInscritas().getCantAsignaturas()) {                       
+                        for(int a=0;a<estudiante.getListaAsignaturasCursadas().getCantAsignaturas();a++) {
+                            Asignatura asigCur = estudiante.getListaAsignaturasCursadas().getAsignaturaI(a);
+                            if(asigOb.getNivelEnMalla() <= estudiante.getNivelAlumno()) {
+                                if(asigOb.getCodigoAsignatura().equals(asigCur.getCodigoAsignatura()) && asigCur.getNota() <3.95) {
+                                    dato+=asigOb.getCodigoAsignatura()+" "+asigOb.getNombre()+" "+asigOb.getCreditos()+" "+asigOb.getNivelEnMalla()+" "+asigOb.getCantAsigPre()+", ";
+                                    for(int k=0;k<asigOb.getCantAsigPre();k++) {
+                                        dato+= asigOb.getAsigPreI(k)+",";
+                                    }
+                                    break;
+                                }
+                                if(asigOb.getCodigoAsignatura().equals(asigCur.getCodigoAsignatura()) && asigCur.getNota() >=3.95) {
+                                    break;
                                 }
                             }
-                            
                         }
                     }
                 }
-                
             }
-            
-        }else{
-            throw new NullPointerException("La persona no existe");
         }
-        return salida;
+        return dato;
         
     }
 
@@ -221,20 +221,19 @@ public class SistemaUCNImpl implements SistemaUCR {
                 Asignatura asig = listaAsignaturas.getAsignaturaI(i);
                 if(asig instanceof AsignaturaOpcional) {
                     AsignaturaOpcional asigOp = (AsignaturaOpcional)asig;
-                    boolean encontrado=false;
+                    
                     int k;
                     for(k=0;k<alumno.getListaAsignaturasCursadas().getCantAsignaturas();k++) {
                         Asignatura asigCur = alumno.getListaAsignaturasCursadas().getAsignaturaI(k);
                         if(asigOp.getCodigoAsignatura().equals(asigCur.getCodigoAsignatura()) &&asigCur.getNota() <3.95 ) {
                             dato += asigOp.getCodigoAsignatura()+" "+asigOp.getNombre()+" "+asigOp.getCreditos()+" "+asigOp.getCantCreditosPreRequisito()+"\n";
-                            encontrado = true;
                             break;
                         }
                         if(asigOp.getCodigoAsignatura().equals(asigCur.getCodigoAsignatura()) && asigCur.getNota() >=3.95 ) {
                             break;
                         }
                     }
-                    if(k==alumno.getListaAsignaturasCursadas().getCantAsignaturas() && !encontrado) {
+                    if(k==alumno.getListaAsignaturasCursadas().getCantAsignaturas()) {
                         boolean reconocida = true;
                         for(int j=0;j<alumno.getListaAsignaturasInscritas().getCantAsignaturas();j++) {
                             Asignatura asigEstudi = alumno.getListaAsignaturasInscritas().getAsignaturaI(j);
