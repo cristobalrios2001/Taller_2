@@ -28,7 +28,9 @@ public interface SistemaUCR {
 
     public boolean ingresarAsociarParaleoAsignaturaProfesor(int numeroParalelo, String codigoAsignatura, String rut);
 
-    public String obtenerAsignaturasDisponibles(String rut);
+    public String obtenerAsignaturasDisponiblesOpcionales(String rut);
+    
+    public String obtenerAsignaturasDisponiblesObligatorias(String rut);
 
     public String obtenerParalelosDisponibles(String codigoAsignaturas);
 

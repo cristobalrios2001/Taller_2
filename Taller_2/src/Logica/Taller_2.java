@@ -20,8 +20,12 @@ public class Taller_2 {
      */
     public static void main(String[] args) throws IOException {
         SistemaUCR system =new SistemaUCNImpl();
-        lecturaEstudiantes( system);
+        lecturaAsignatura(system);
+        lecturaEstudiantes(system);
+        lecturaProfesor(system);
+        lecturaParalelo(system);
         
+        System.out.println(system.obtenerAsignaturasDisponiblesOpcionales("11.111.111-1"));
     }
     
     public static void lecturaEstudiantes(SistemaUCR system)throws IOException{
@@ -31,7 +35,7 @@ public class Taller_2 {
             String line = s.nextLine();            
             String [] partes = line.split(",");
             String rut = partes[0];            
-            String correo = partes[1];            
+            String correo = partes[1];                  
             int nivelAlumno = Integer.parseInt(partes[2]);            
             String constraseña = partes[3];
             try{
@@ -48,6 +52,7 @@ public class Taller_2 {
                         Double notaFinal = Double.parseDouble(partes2[1]);
                        
                         try{
+                            
                             boolean ingresoAsignaturaCurs = system.ingresarAsociarAlumnoAsignaturaCursada(rut, codigo, notaFinal);
                             if(ingresoAsignaturaCurs){
                                 System.out.println("Asignatura Cursada Alumno Ingresada");

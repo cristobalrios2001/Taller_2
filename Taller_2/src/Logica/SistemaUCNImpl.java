@@ -161,28 +161,43 @@ public class SistemaUCNImpl implements SistemaUCR {
     }
 
     @Override
-    public String obtenerAsignaturasDisponibles(String rut) {
+    public String obtenerAsignaturasDisponiblesObligatorias(String rut) {
         Persona p = listaPersonas.buscar(rut);
         String salida = "";
         salida += "Asignaturas disponibles: ";
         if(p!= null){
             if(p instanceof Alumno){
                 Alumno alumno = (Alumno)p;
-                ListaAsignaturas lAsigAlumIns = alumno.getListaAsignaturasInscritas();
-                ListaAsignaturas lAsigAlumCurs = alumno.getListaAsignaturasCursadas();
+                
+                ListaAsignaturas listaAsigCurs = alumno.getListaAsignaturasCursadas();   
+                ListaAsignaturas listaAsigIns = alumno.getListaAsignaturasInscritas();
                 for (int i = 0; i < listaAsignaturas.getCantAsignaturas(); i++) {
-                    Asignatura asignaturaG = listaAsignaturas.getAsignaturaI(i);                    
-                    if(asignaturaG instanceof AsignaturaObligatoria){
-                        AsignaturaObligatoria asigOb = (AsignaturaObligatoria)asignaturaG;
-                        for (int j = 0; j < lAsigAlumCurs.getCantAsignaturas(); j++) {
-                            if()
+                    Asignatura asigGen = listaAsignaturas.getAsignaturaI(i);
+                    if(asigGen instanceof AsignaturaObligatoria){
+                        AsignaturaObligatoria asigObGen = (AsignaturaObligatoria) asigGen;
+                        for (int j = 0; j < listaAsigCurs.getCantAsignaturas(); j++) {
+                            Asignatura asigAlumCurs = listaAsigCurs.getAsignaturaI(j);
+                            if(asigAlumCurs instanceof AsignaturaObligatoria){
+                                AsignaturaObligatoria asigObAlumCurs = (AsignaturaObligatoria) asigAlumCurs;
+                                
+                                if((asigObGen.getCodigoAsignatura().equals(asigObAlumCurs.getCodigoAsignatura())) && asigObAlumCurs.getNota()<3.95){
+                                    
+                                }
+                            }
                         }
                         
                         
-                        
-                    }
-                    else if(asignaturaG instanceof AsignaturaOpcional){
-                        
+                        for (int k = 0; k < listaAsigIns.getCantAsignaturas(); k++) {
+                            Asignatura asigAlumIns = listaAsigIns.getAsignaturaI(k);
+                            if(asigAlumIns instanceof AsignaturaObligatoria){
+                                AsignaturaObligatoria asigObAlumIns = (AsignaturaObligatoria) asigAlumIns;
+                                
+                                if(!asigObGen.getCodigoAsignatura().equals(asigObAlumIns.getCodigoAsignatura())){
+                                    salida += "\n\t"+asigObGen.getCodigoAsignatura();
+                                }
+                            }
+                            
+                        }
                     }
                 }
                 
@@ -195,6 +210,50 @@ public class SistemaUCNImpl implements SistemaUCR {
         
     }
 
+    
+    @Override
+    public String obtenerAsignaturasDisponiblesOpcionales(String rut) {
+        String dato = "";
+        Persona p = listaPersonas.buscar(rut);
+        if(p != null && p instanceof Alumno) {
+            Alumno alumno =(Alumno)p;
+            for(int i=0;i<listaAsignaturas.getCantAsignaturas();i++) {
+                Asignatura asig = listaAsignaturas.getAsignaturaI(i);
+                if(asig instanceof AsignaturaOpcional) {
+                    AsignaturaOpcional asigOp = (AsignaturaOpcional)asig;
+                    boolean encontrado=false;
+                    int k;
+                    for(k=0;k<alumno.getListaAsignaturasCursadas().getCantAsignaturas();k++) {
+                        Asignatura asigCur = alumno.getListaAsignaturasCursadas().getAsignaturaI(k);
+                        if(asigOp.getCodigoAsignatura().equals(asigCur.getCodigoAsignatura()) &&asigCur.getNota() <3.95 ) {
+                            dato += asigOp.getCodigoAsignatura()+" "+asigOp.getNombre()+" "+asigOp.getCreditos()+" "+asigOp.getCantCreditosPreRequisito()+"\n";
+                            encontrado = true;
+                            break;
+                        }
+                        if(asigOp.getCodigoAsignatura().equals(asigCur.getCodigoAsignatura()) && asigCur.getNota() >=3.95 ) {
+                            break;
+                        }
+                    }
+                    if(k==alumno.getListaAsignaturasCursadas().getCantAsignaturas() && !encontrado) {
+                        boolean reconocida = true;
+                        for(int j=0;j<alumno.getListaAsignaturasInscritas().getCantAsignaturas();j++) {
+                            Asignatura asigEstudi = alumno.getListaAsignaturasInscritas().getAsignaturaI(j);
+                            if(asigOp.getCodigoAsignatura().equals(asigEstudi.getCodigoAsignatura())) {
+                                reconocida = false;
+                                break;
+                            }
+                        }
+                        if (reconocida) {
+                            dato += asigOp.getCodigoAsignatura()+" "+asigOp.getNombre()+" "+asigOp.getCreditos()+" "+asigOp.getCantCreditosPreRequisito()+"\n";
+                        }
+                    }    
+                }
+            }
+        }
+        return dato;
+        
+    }
+    
     @Override
     public String obtenerParalelosDisponibles(String codigoAsignaturas) {
         Asignatura asig = listaAsignaturas.buscar(codigoAsignaturas);
