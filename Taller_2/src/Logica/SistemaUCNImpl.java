@@ -149,20 +149,22 @@ public class SistemaUCNImpl implements SistemaUCR {
                 
                 if(persona != null){
                     if(persona instanceof Profesor){
-                        
+                        Profesor profesor = (Profesor) persona;
                         if(asignatura instanceof AsignaturaObligatoria){
-                            Profesor profesor = (Profesor) persona;
-                            paralelo.setAsignatura(asignatura);
+                            AsignaturaObligatoria asigOb = (AsignaturaObligatoria) asignatura;                            
+                            paralelo.setAsignatura(asigOb);
                             paralelo.setProfesor(profesor);
                             profesor.getListaParalelos().ingresar(paralelo);
+                            profesor.getListaAsignaturas().ingresar(asigOb);
                             return true;
                         }
                         else {
-                            if (paralelo.getAsignatura() == null){
-                                Profesor profesor = (Profesor) persona;
-                                paralelo.setAsignatura(asignatura);
+                            AsignaturaOpcional asigOp = (AsignaturaOpcional) asignatura;
+                            if (paralelo.getAsignatura() == null){                                
+                                paralelo.setAsignatura(asigOp);
                                 paralelo.setProfesor(profesor);
                                 profesor.getListaParalelos().ingresar(paralelo);
+                                profesor.getListaAsignaturas().ingresar(asigOp);
                                 return true;
                             }else{
                                 throw new NullPointerException("El paralelo ya tiene una asignatura asignada !");
