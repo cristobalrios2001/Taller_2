@@ -53,4 +53,6 @@ public interface SistemaUCR {
     public boolean  comprobarNotaFinalAsignaturas (String codigoAsignatura, String rut);
     
     public boolean eliminarAlumno ();
+    
+    
 }

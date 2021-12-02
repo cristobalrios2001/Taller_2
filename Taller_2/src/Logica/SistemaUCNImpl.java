@@ -45,7 +45,6 @@ public class SistemaUCNImpl implements SistemaUCR {
     public boolean ingresarAsignaturaObligatoria(String codigo, String nombre, int creditos, int nivelMalla, int cantAsigPre) {
         Asignatura asignaturaObligatoria = new AsignaturaObligatoria(codigo, nombre, creditos, nivelMalla, cantAsigPre);
         
-        
         return listaAsignaturas.ingresar(asignaturaObligatoria);
     }
     
@@ -75,16 +74,11 @@ public class SistemaUCNImpl implements SistemaUCR {
     public boolean ingresarAsociarAlumnoAsignaturaCursada(String rutAlumno, String codigoAsignatura, Double notaFinal) {
         Persona p = listaPersonas.buscar(rutAlumno);
         
-        
-        
         if(p != null){
             Asignatura asig = listaAsignaturas.buscar(codigoAsignatura);
-            
             if(asig != null){
-                
                 if(p instanceof Alumno){
                     int nivelAsigMin = 11;
-                    
                     if(asig instanceof AsignaturaObligatoria){
                         if(nivelAsigMin > ((AsignaturaObligatoria) asig).getNivelEnMalla()){
                             nivelAsigMin = ((AsignaturaObligatoria) asig).getNivelEnMalla();
@@ -93,18 +87,13 @@ public class SistemaUCNImpl implements SistemaUCR {
                     asig.setNota(notaFinal);
                     ((Alumno) p).setNivelAlumno(nivelAsigMin);
                     return ((Alumno) p).getListaAsignaturasCursadas().ingresar(asig);
-                    
                 }
-                
             }else{
                 throw new NullPointerException("La asignatura no existe");
             }
-            
-            
         }else{
             throw new NullPointerException("La persona no existe");
         }
-        
         return false;
     }
     
@@ -563,7 +552,7 @@ public class SistemaUCNImpl implements SistemaUCR {
     }
 
 
-    
+   
 
     
 

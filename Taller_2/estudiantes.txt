@@ -1,5 +1,5 @@
 11.111.111-1,Jorge.perez@alumnos.ucn.cl,3,Abc_123
-5
+2
 1285,3.2
 1286,4.8
 0
