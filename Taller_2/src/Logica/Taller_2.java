@@ -32,7 +32,6 @@ public class Taller_2 {
     }
     
     public static void lecturaEstudiantes(SistemaUCR system)throws IOException{
-        System.out.println("Leyendo estudiantes");
         Scanner s = new Scanner(new File("estudiantes.txt"));
         while(s.hasNextLine()) {
             String line = s.nextLine();            
@@ -57,10 +56,8 @@ public class Taller_2 {
                             
                             boolean ingresoAsignaturaCurs = system.ingresarAsociarAlumnoAsignaturaCursada(rut, codigo, notaFinal);
                            
-                            if(ingresoAsignaturaCurs){
+                            if(!ingresoAsignaturaCurs){
                                 
-                                System.out.println("Asignatura Cursada Alumno Ingresada");
-                            }else{
                                 System.out.println("Asignatura Cursada Alumno NO PUDO ser Ingresada");
                             }
                         }
@@ -86,10 +83,8 @@ public class Taller_2 {
                             
                             boolean ingresoAsignaturaIns = system.ingresarAsociarAlumnoAsignaturaInscrita(rut, codigo, numeroParalelo);
                               
-                            if(ingresoAsignaturaIns){
+                            if(!ingresoAsignaturaIns){
                                 
-                                System.out.println("Asignatura Cursada Alumno Ingresada");
-                            }else{
                                 System.out.println("Asignatura Cursada Alumno NO PUDO ser Ingresada");
                             }
                         }
@@ -110,7 +105,6 @@ public class Taller_2 {
     
     
     public static void lecturaAsignatura(SistemaUCR system)throws IOException{
-        System.out.println("Leyendo asignaturas");
         Scanner s = new Scanner(new File("asignaturas.txt"));
         while(s.hasNextLine()) {
             String line = s.nextLine();
@@ -131,8 +125,8 @@ public class Taller_2 {
                             try{
                                    
                                 boolean asociarIngreso = system.asociarCodigoAsignaturaObligatoria( codigoAsig, codigoAsigPreReq);
-                                if (ingresoOblig && asociarIngreso){
-                                    System.out.println("Asignatura Obligatoria ingresada");
+                                if (!ingresoOblig &&  !asociarIngreso){
+                                    System.out.println("Asignatura Obligatoria no ha podido ser ingresada");
                                 }
                             }catch(Exception ex){
                                 System.out.println(ex.getMessage());
@@ -149,11 +143,7 @@ public class Taller_2 {
             else if (tipoAsignatura.equals("opcional")){
                 try{
                     int creditosPre = Integer.parseInt(partes[4]);
-                    boolean ingresoOpc = system.ingresarAsignaturaOpcional(codigoAsig, nombreAsig, creditosAsig, creditosPre);
-                    if (ingresoOpc){
-                        
-                        System.out.println("Asignatura Opcional ingresada");
-                    }
+                    system.ingresarAsignaturaOpcional(codigoAsig, nombreAsig, creditosAsig, creditosPre);
                     
                 }catch(Exception ex){
                     System.out.println(ex.getMessage());
@@ -165,7 +155,6 @@ public class Taller_2 {
     }
     
     public static void lecturaProfesor(SistemaUCR system)throws IOException{
-        System.out.println("Leyendo profesor");
         Scanner s = new Scanner(new File("profesores.txt"));
         while(s.hasNextLine()) {
             String line = s.nextLine();
@@ -175,10 +164,8 @@ public class Taller_2 {
             String contraseña = partes[2];
             int salario = Integer.parseInt(partes[3]);
             try{
-                boolean ingresoProfesor = system.ingresarProfesor(rut, correo, contraseña, salario);
-                if(ingresoProfesor){
-                    System.out.println("Ingreso correcto de Profesor");
-                }
+                system.ingresarProfesor(rut, correo, contraseña, salario);
+                
             }
             catch(Exception ex){
                 System.out.println(ex.getMessage());
@@ -188,7 +175,6 @@ public class Taller_2 {
     }
     
     public static void lecturaParalelo(SistemaUCR system)throws IOException{
-        System.out.println("Leyendo paralelo");
         Scanner s = new Scanner(new File("paralelos.txt"));
         while(s.hasNextLine()) {
             String line = s.nextLine();
@@ -201,17 +187,17 @@ public class Taller_2 {
                 boolean ingresoParalelo = system.ingresarParalelo(numeroParalelo);
                 
                 if(ingresoParalelo){
-                    System.out.println("Ingreso correcto de Paralelo");
+                    
                     try{
-                        boolean asociarParalelo = system.ingresarAsociarParaleoAsignaturaProfesor(numeroParalelo, codigoAsig, rutProfesor);
-                        if(asociarParalelo){
-                            System.out.println("Asociación de paralelo exitoso");
-                        }
+                        system.ingresarAsociarParaleoAsignaturaProfesor(numeroParalelo, codigoAsig, rutProfesor);
+                        
                     }
                     catch(Exception ex){
                         System.out.println(ex.getMessage());
                     }
                     
+                }else{
+                    System.out.println("Ingreso incorrecto de Paralelo");
                 }
             }
             catch(Exception ex){
@@ -223,9 +209,9 @@ public class Taller_2 {
 
     private static void menu(SistemaUCR system) throws ParseException {
         Scanner sc=new Scanner(System.in);
-        System.out.println("Ingrese el correo");
+        System.out.println("Ingrese el correo: ");
         String correo=sc.nextLine();
-        System.out.println("Ingrese la contraseña");
+        System.out.println("Ingrese la contraseña: ");
         String contraseña=sc.nextLine();
         if(!correo.equals("Admin") && !contraseña.equals("GHI_789")){
             boolean op = iniciarSesion(correo,contraseña);
