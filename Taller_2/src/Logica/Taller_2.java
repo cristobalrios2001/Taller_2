@@ -8,7 +8,9 @@ package Logica;
 import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 /**
  *
  * @author crist
@@ -18,12 +20,13 @@ public class Taller_2 {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ParseException {
         SistemaUCR system =new SistemaUCNImpl();
         lecturaAsignatura(system);        
         lecturaEstudiantes(system);        
         lecturaProfesor(system);        
         lecturaParalelo(system);
+        menu(system);
         System.out.println("\n------------------");
         
     }
@@ -217,5 +220,127 @@ public class Taller_2 {
         }  
 
     }
+
+    private static void menu(SistemaUCR system) throws ParseException {
+        Scanner sc=new Scanner(System.in);
+        System.out.println("Ingrese el correo");
+        String correo=sc.nextLine();
+        System.out.println("Ingrese la contraseña");
+        String contraseña=sc.nextLine();
+        if(!correo.equals("Admin") && !contraseña.equals("GHI_789")){
+            boolean op = iniciarSesion(correo,contraseña);
+            while(!op){
+                int opcion=0;
+                System.out.println("Correo o contraseña invalida");
+                while(opcion==0){
+                try{                
+                    System.out.println("Desea volver a intentarlo (1) o cerrar el sistema (2)");
+                    opcion=Integer.parseInt(sc.nextLine());                
+                }catch(Exception e){
+                    System.out.println("Ingrese una opcion valida");
+                    opcion=Integer.parseInt(sc.nextLine());
+                }if(opcion==1){
+                    System.out.println("Ingrese el correo");
+                    correo=sc.nextLine();
+                    System.out.println("Ingrese la contraseña");
+                    contraseña=sc.nextLine();
+                    op=iniciarSesion(correo,contraseña);
+                }else if (opcion==2){
+                    System.out.println("Cerrando sistema...");
+                    System.exit(0);
+                }else{
+                    System.out.println("ingrese un numero valido entre 1 y 2");
+                    opcion=0;
+                    }   
+                }            
+            }
+        }int periodo=ingresoFecha();
+        if(periodo==1){
+            inicioDeSemestre(correo);
+        }else if(periodo==2){
+            mitadDeSemestre(correo);
+        }else if(periodo==3){
+            finDeSemetre(correo);
+        }else if(periodo==4){
+            cierreDelSemestre(correo);
+        }else{
+            System.out.println("Disfrute de sus vacaciones");   
+        }
+    
+    }
+
+    private static boolean iniciarSesion(String correo, String contraseña) {
+        if (correo.equals("")&&contraseña.equals("")){
+            return true;
+            
+        }else{
+            return false;
+        }
+        
+    }
+
+    private static void menuAdmin() {
+        
+    }
+
+    private static int ingresoFecha() throws ParseException {
+        Scanner sc= new Scanner(System.in);
+        SimpleDateFormat dateFormat = new SimpleDateFormat ("dd/MM/yyyy");
+        Date date1=dateFormat.parse("08/03/2021");
+        Date date2=dateFormat.parse("02/05/2021");
+        Date date3=dateFormat.parse("03/05/2021");
+        Date date4=dateFormat.parse("11/07/2021");
+        Date date5=dateFormat.parse("12/07/2021");
+        Date date6=dateFormat.parse("25/07/2021");
+        Date date7=dateFormat.parse("26/07/2021");
+        Date inputDate=null; 
+        System.out.println("Ingrese fecha con formato dd/MM/yyyy");
+        String date=sc.nextLine();           
+        boolean confirmacion=false;
+        while(!confirmacion){                
+            try{
+                inputDate=dateFormat.parse(date);
+                confirmacion=true;
+            }
+             catch(Exception e){
+                    System.out.println("formato invalido ");
+                      
+                    System.out.println("Ingrese fecha con formato yyyy-MM-dd");
+                    date=sc.nextLine();      
+                    }  
+            }
+        if(inputDate.compareTo(date1)>=0 && inputDate.compareTo(date2)<=0){
+            System.out.println("Inicio de semestre");
+            return 1;
+        }else if(inputDate.compareTo(date3)>=0 && inputDate.compareTo(date4)<=0){
+            System.out.println("Mitad de semestre");
+            return 2;
+        }else if(inputDate.compareTo(date5)>=0 && inputDate.compareTo(date6)<=0){
+            System.out.println("Fin de semestre");
+            return 3;
+        }else if(inputDate.compareTo(date7)==0){
+            System.out.println("Cierre del semestre");
+            return 4;
+        }else{           
+            return 5;
+        }
+    } 
+
+    private static void inicioDeSemestre(String correo) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static void mitadDeSemestre(String correo) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static void finDeSemetre(String correo) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private static void cierreDelSemestre(String correo) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     
 }
