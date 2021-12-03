@@ -11,11 +11,14 @@ public class SistemaUCNImpl implements SistemaUCR {
     private ListaPersonas listaPersonas;
     private ListaAsignaturas listaAsignaturas;
     private ListaParalelos listaParalelos;
+    private ListaPersonas listaPersonasEliminadas;
     
     public SistemaUCNImpl(){
         listaPersonas = new ListaPersonas(1000);
         listaAsignaturas = new ListaAsignaturas(650);
         listaParalelos = new ListaParalelos(100);
+        listaPersonasEliminadas = new ListaPersonas(1000);
+        
     }
     
     
@@ -502,52 +505,22 @@ public class SistemaUCNImpl implements SistemaUCR {
     @Override
     public boolean ingresarNotaFinal(String codigoAsignatura, String rut, Double notaFinal) {
         Persona persona = listaPersonas.buscar(rut);
-        
-        if(persona != null){
-            if(persona instanceof Alumno){
-                Alumno alumno = (Alumno) persona;
-                ListaAsignaturas laInsAlum = alumno.getListaAsignaturasInscritas();
-            
-                Asignatura asig = laInsAlum.buscar(codigoAsignatura);
-            
-                if(asig != null){
-                    asig.setNota(notaFinal);
+        if(persona != null && persona instanceof Alumno){
+            for (int i = 0; i < listaParalelos.getCantParalelos(); i++) {
+                Paralelo paralelo = listaParalelos.getParaleloI(i);
+                if(paralelo.getAsignatura().equals(codigoAsignatura)){
+                    Asignatura asig = listaAsignaturas.buscar(codigoAsignatura);
+                    Alumno alumno =(Alumno)persona;
+                    Asignatura asigAlum = alumno.getListaAsignaturasInscritas().buscar(asig.getCodigoAsignatura());
+                    asigAlum.setNota(notaFinal);
+                    alumno.getListaAsignaturasCursadas().ingresar(asigAlum);
+                    alumno.getListaAsignaturasInscritas().eliminar(asigAlum.getCodigoAsignatura());
+                    paralelo.getListaPersonas().eliminar(rut);
                     return true;
-                }else{
-                    throw new NullPointerException("La asignatura no existe !");
-                }
-            }
-            
-        }else{
-            throw new NullPointerException("La persona no existe !");
-        }
-        return false;
-    }
-
-    @Override
-    public boolean comprobarNotaFinalAsignaturas(String codigoAsignatura, String rut) {
-        Persona persona = listaPersonas.buscar(rut);
-        
-        if(persona != null){
-            if(persona instanceof Alumno){
-                Alumno alumno = (Alumno) persona;
-                ListaAsignaturas laInsAlum = alumno.getListaAsignaturasInscritas();
-                
-                Asignatura asig = laInsAlum.buscar(codigoAsignatura);
-                
-                if(asig != null){
-                    if(asig.getNota()>3.95){
-                        alumno.getListaAsignaturasCursadas().ingresar(asig);
-                        laInsAlum.eliminar(codigoAsignatura);
-                        return true;
-                    }
-                    
-                }else{
-                    throw new NullPointerException("La asignatura no existe !");
                 }
             }
         }else{
-            throw new NullPointerException("La persona no existe !");
+            throw new NullPointerException("El alumno no existe");
         }
         return false;
     }
@@ -565,6 +538,7 @@ public class SistemaUCNImpl implements SistemaUCR {
                         ListaPersonas lpersonas = paralelo.getListaPersonas();
                         for (int k = 0; k < lpersonas.getCantPersonas(); k++) {
                             if(lpersonas.getPersonaI(k).equals(alumno)){
+                                listaPersonasEliminadas.ingresar(alumno);
                                 paralelo.getListaPersonas().eliminar(alumno.getRutPersona());
                                 listaPersonas.eliminar(alumno.getRutPersona());
                                 return true;
@@ -578,42 +552,4 @@ public class SistemaUCNImpl implements SistemaUCR {
         }
         return false;
     }
-
-    @Override
-    public String imprimirListas(String rut){
-        Persona p = listaPersonas.buscar(rut);
-        String salida = "";
-        if(p instanceof Alumno){
-            Alumno a = (Alumno)p;
-            for (int i = 0; i < a.getListaAsignaturasCursadas().getCantAsignaturas(); i++) {
-                Asignatura asig = a.getListaAsignaturasCursadas().getAsignaturaI(i);
-                if (asig instanceof AsignaturaObligatoria){
-                    salida += "\n"+asig.getCodigoAsignatura()+" "+asig.getNombre();
-                }
-            }
-        }
-        
-        return salida;
-    }
-    
-    //paralelo rut asig
-    
-    
-    @Override
-    public String imprimirParalelos(){
-        String salida = "";
-        for (int i = 0; i < listaParalelos.getCantParalelos(); i++) {
-            Paralelo paralelo = listaParalelos.getParaleloI(i);
-            ListaPersonas lp = paralelo.getListaPersonas();
-            for (int j = 0; j < lp.getCantPersonas(); j++) {
-                Persona p = lp.getPersonaI(j);
-                salida += p.getRutPersona();
-            }
-        }
-        
-        return salida;
-    }
-
-    
-    
 }
