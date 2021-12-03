@@ -14,12 +14,12 @@ import Logica.*;
  */
 public class Paralelo {
     private int numeroParalelo;
-    private Profesor profesor;
-    private Asignatura asignatura;
+    private String profesor;
+    private String asignatura;
     private int cupoParalelo; // cambio espacio en paralelo
     private ListaPersonas listaPersonas; //lista de estudiantes maximo 100
 
-    public Paralelo(int numeroParalelo) {
+    public Paralelo(int numeroParalelo, String asignatura, String profesor) {
         this.numeroParalelo = numeroParalelo;
         this.profesor = profesor;
         this.asignatura = asignatura;
@@ -36,21 +36,26 @@ public class Paralelo {
         this.numeroParalelo = numeroParalelo;
     }
 
-    public Profesor getProfesor() {
+    public String getProfesor() {
         return profesor;
     }
 
-    public void setProfesor(Profesor profesor) {
+    public void setProfesor(String profesor) {
         this.profesor = profesor;
     }
 
-    public Asignatura getAsignatura() {
+    public String getAsignatura() {
         return asignatura;
     }
 
-    public void setAsignatura(Asignatura asignatura) {
+    public void setAsignatura(String asignatura) {
         this.asignatura = asignatura;
     }
+
+    
+    
+
+    
 
     public int getCupoParalelo() {  // cambio espacio en paralelo
         return cupoParalelo;

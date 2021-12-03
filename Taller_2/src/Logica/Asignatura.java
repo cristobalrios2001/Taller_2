@@ -16,14 +16,14 @@ public class Asignatura {
     private String nombre;
     private int creditos;
     private Double nota;
-    private Paralelo paralelo;
+    private int paralelo;
 
     public Asignatura(String codigoAsignatura, String nombre, int creditos) {
         this.codigoAsignatura = codigoAsignatura;
         this.nombre = nombre;
         this.creditos = creditos;
         nota = null;
-        paralelo = null;
+        paralelo = 0;
     }
 
     public String getCodigoAsignatura() {
@@ -36,6 +36,14 @@ public class Asignatura {
 
     public String getNombre() {
         return nombre;
+    }
+
+    public int getParalelo() {
+        return paralelo;
+    }
+
+    public void setParalelo(int paralelo) {
+        this.paralelo = paralelo;
     }
 
     public void setNombre(String nombre) {
@@ -58,12 +66,5 @@ public class Asignatura {
         this.nota = nota;
     }
     
-     public Paralelo getParalelo() {
-        return paralelo;
-    }
-
-    public void setParalelo(Paralelo paralelo) {
-        this.paralelo = paralelo;
-    }
-    
+   
 }

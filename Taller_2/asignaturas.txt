@@ -1,5 +1,6 @@
-1285,termodinámica,8,obligatoria,3,2,5261,4962
+1285,termodinámica,2,obligatoria,2,2,5261,4962
 1286,belga,4,opcional,14
 1102,ingles,2,opcional,4
 5261,fisica,8,obligatoria,2,1,4962
-4962,calculo,8,obligatoria,1,2022
+4962,calculo,5,obligatoria,1,1,1526
+2023,estadistica,8,obligatoria,3,1,4962

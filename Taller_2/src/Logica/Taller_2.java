@@ -23,12 +23,24 @@ public class Taller_2 {
     public static void main(String[] args) throws IOException, ParseException {
         SistemaUCR system =new SistemaUCNImpl();
         lecturaAsignatura(system);        
-        lecturaEstudiantes(system);        
-        lecturaProfesor(system);        
-        lecturaParalelo(system);
-        menu(system);
         System.out.println("\n------------------");
-        
+        lecturaProfesor(system);        
+        System.out.println("\n------------------");
+        lecturaParalelo(system);
+        System.out.println("\n------------------");
+        lecturaEstudiantes(system);
+       // menu(system);
+        System.out.println("\n------------------");
+        //System.out.println(system.imprimirListas("11.111.111-1"));
+        //System.out.println(system.obtenerAsignaturasDisponiblesOpcionales("11.111.111-1"));
+        //System.out.println(system.obtenerAsignaturasDisponiblesObligatorias("11.111.111-1"));
+        //System.out.println(system.obtenerAsignaturasDisponiblesOpcionales("11.111.111-1"));
+        //System.out.println(system.obtenerParalelosProfesor("44.444.444-4"));
+        //System.out.println(system.obtenerAlumnosParalelosProfesor("44.444.444-4", 3));
+        //System.out.println(system.imprimirParalelos());
+        System.out.println(system.obtenerAsignaturaInscrita("11.111.111-1"));
+        system.eliminarAsignatura("11.111.111-1", "1102");
+        System.out.println(system.obtenerAsignaturaInscrita("11.111.111-1"));
     }
     
     public static void lecturaEstudiantes(SistemaUCR system)throws IOException{
@@ -49,9 +61,8 @@ public class Taller_2 {
                     for (int i = 0; i < cantAsigCursadas; i++) {               
                         line = s.nextLine();
                         String [] partes2 = line.split(",");
-                        String codigo = partes2[0];
+                        String codigo = partes2[0];                        
                         Double notaFinal = Double.parseDouble(partes2[1]);
-                       
                         try{
                             
                             boolean ingresoAsignaturaCurs = system.ingresarAsociarAlumnoAsignaturaCursada(rut, codigo, notaFinal);
@@ -65,7 +76,7 @@ public class Taller_2 {
                         catch(Exception ex){
                             
                             System.out.println(ex.getMessage());
-                                
+                            
                         }
                     }
                         
@@ -82,10 +93,10 @@ public class Taller_2 {
                         try{
                             
                             boolean ingresoAsignaturaIns = system.ingresarAsociarAlumnoAsignaturaInscrita(rut, codigo, numeroParalelo);
-                              
+                            
                             if(!ingresoAsignaturaIns){
                                 
-                                System.out.println("Asignatura Cursada Alumno NO PUDO ser Ingresada");
+                                System.out.println("Asignatura inscrita Alumno NO PUDO ser Ingresada");
                             }
                         }
                         catch(Exception ex){
@@ -113,7 +124,6 @@ public class Taller_2 {
             String nombreAsig = partes[1];
             int creditosAsig = Integer.parseInt(partes[2]);
             String tipoAsignatura = partes[3];
-            
             if(tipoAsignatura.equals("obligatoria")){
                 try{
                     int nivelMalla = Integer.parseInt(partes[4]);                    
@@ -184,23 +194,11 @@ public class Taller_2 {
             String rutProfesor = partes[2];
             
             try{
-                boolean ingresoParalelo = system.ingresarParalelo(numeroParalelo);
-                
-                if(ingresoParalelo){
-                    
-                    try{
-                        system.ingresarAsociarParaleoAsignaturaProfesor(numeroParalelo, codigoAsig, rutProfesor);
-                        
-                    }
-                    catch(Exception ex){
-                        System.out.println(ex.getMessage());
-                    }
-                    
-                }else{
-                    System.out.println("Ingreso incorrecto de Paralelo");
+                boolean ingresoParalelo = system.ingresarParalelo(numeroParalelo, codigoAsig, rutProfesor);
+                if(!ingresoParalelo){
+                    System.out.println("Paralelo no ingresado");
                 }
-            }
-            catch(Exception ex){
+            }catch(Exception ex){
                 System.out.println(ex.getMessage());
             }
         }  

@@ -20,13 +20,13 @@ public interface SistemaUCR {
 
     public boolean ingresarAsignaturaOpcional(String codigo, String nombre, int creditos, int cantCreditosPreRequisito);
 
-    public boolean ingresarParalelo(int numeroParalelo);
+    public boolean ingresarParalelo(int numeroParalelo, String codigoAsignatura, String rutProfesor);
     
     public boolean ingresarAsociarAlumnoAsignaturaCursada(String rutAlumno, String codigoAsignatura, Double notaFinal);
     
     public boolean ingresarAsociarAlumnoAsignaturaInscrita(String rutAlumno, String codigoAsignatura, int numeroParalelo);
 
-    public boolean ingresarAsociarParaleoAsignaturaProfesor(int numeroParalelo, String codigoAsignatura, String rut);
+    //public boolean ingresarAsociarParaleoAsignaturaProfesor(int numeroParalelo, String codigoAsignatura, String rut);
 
     public String obtenerAsignaturasDisponiblesOpcionales(String rut);
     
@@ -54,5 +54,6 @@ public interface SistemaUCR {
     
     public boolean eliminarAlumno ();
     
-    
+    public String imprimirListas(String ut);
+    public String imprimirParalelos();
 }
