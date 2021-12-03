@@ -31,16 +31,7 @@ public class Taller_2 {
         lecturaEstudiantes(system);
        // menu(system);
         System.out.println("\n------------------");
-        //System.out.println(system.imprimirListas("11.111.111-1"));
-        //System.out.println(system.obtenerAsignaturasDisponiblesOpcionales("11.111.111-1"));
-        //System.out.println(system.obtenerAsignaturasDisponiblesObligatorias("11.111.111-1"));
-        //System.out.println(system.obtenerAsignaturasDisponiblesOpcionales("11.111.111-1"));
-        //System.out.println(system.obtenerParalelosProfesor("44.444.444-4"));
-        //System.out.println(system.obtenerAlumnosParalelosProfesor("44.444.444-4", 3));
-        //System.out.println(system.imprimirParalelos());
-        System.out.println(system.obtenerAsignaturaInscrita("11.111.111-1"));
-        system.eliminarAsignatura("11.111.111-1", "1102");
-        System.out.println(system.obtenerAsignaturaInscrita("11.111.111-1"));
+        
     }
     
     public static void lecturaEstudiantes(SistemaUCR system)throws IOException{
