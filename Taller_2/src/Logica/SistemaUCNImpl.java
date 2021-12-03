@@ -520,5 +520,42 @@ public class SistemaUCNImpl implements SistemaUCR {
         
     }
     
+    public boolean buscarCorreo(String correo){
+        Persona p= listaPersonas.buscarCorreo(correo);
+        if(p==null){
+           return false;
+        }else{
+           return true;
+        }
+        
+    }
     
+    public boolean contraseñaCorrecta(String correo, String contraseña){
+        Persona p= listaPersonas.buscarCorreo(correo);
+         if(p!=null){
+            if(p.getContraseña().equals(contraseña)){
+                return true;
+            } 
+        }else{
+            throw new NullPointerException("contraseña incorrecta");
+            
+        }return false;   
+    }
+    
+    
+    public String obtenerRut(String correo){
+        Persona p = listaPersonas.buscarCorreo(correo);
+        return p.getRutPersona();
+    }
+    
+    public int tipoPersona(String correo){
+        Persona p= listaPersonas.buscarCorreo(correo);
+        if(p instanceof Alumno){
+            return 1;
+        }else if (p instanceof Profesor){
+            return 2;
+        }else{
+            return 3;
+        }        
+    }
 }

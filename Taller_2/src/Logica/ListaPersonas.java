@@ -53,4 +53,14 @@ public class ListaPersonas {
     public Persona getPersonaI(int posicion){
         return listaPersonas[posicion];
     }
+    
+    public Persona buscarCorreo(String correo){
+        for(int i=0;i<cantPersonas;i++){
+            if(listaPersonas[i].getCorreo().equals(correo)){
+                return listaPersonas[i];
+            }
+        }
+        return null;
+    
+    }
 }

@@ -47,4 +47,12 @@ public interface SistemaUCR {
     public boolean eliminarAlumno ();
     
     public String sobreescribir();
+    
+    public boolean buscarCorreo(String correo);
+    
+    public boolean contraseñaCorrecta(String correo, String contraseña);
+    
+    public String obtenerRut(String correo);
+    
+    public int tipoPersona(String correo);
 }

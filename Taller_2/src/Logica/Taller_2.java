@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package Logica;
 
 import java.io.File;
@@ -12,10 +8,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import ucn.*;
-/**
- *
- * @author crist
- */
+
+
 public class Taller_2 {
 
     /**
@@ -197,67 +191,73 @@ public class Taller_2 {
 
     }
 
-    private static void menu(SistemaUCR system) throws ParseException {
+    private static void menu(SistemaUCR system) throws ParseException, IOException {
         Scanner sc=new Scanner(System.in);
-        System.out.println("Ingrese el correo: ");
+        System.out.println("Ingrese el correo");
         String correo=sc.nextLine();
-        System.out.println("Ingrese la contraseña: ");
+        System.out.println("Ingrese la contraseña");
         String contraseña=sc.nextLine();
-        if(!correo.equals("Admin") && !contraseña.equals("GHI_789")){
-            boolean op = iniciarSesion(correo,contraseña);
-            while(!op){
-                int opcion=0;
-                System.out.println("Correo o contraseña invalida");
-                while(opcion==0){
-                try{                
-                    System.out.println("Desea volver a intentarlo (1) o cerrar el sistema (2)");
-                    opcion=Integer.parseInt(sc.nextLine());                
-                }catch(Exception e){
-                    System.out.println("Ingrese una opcion valida");
-                    opcion=Integer.parseInt(sc.nextLine());
-                }if(opcion==1){
-                    System.out.println("Ingrese el correo");
-                    correo=sc.nextLine();
-                    System.out.println("Ingrese la contraseña");
-                    contraseña=sc.nextLine();
-                    op=iniciarSesion(correo,contraseña);
-                }else if (opcion==2){
-                    System.out.println("Cerrando sistema...");
-                    System.exit(0);
-                }else{
-                    System.out.println("ingrese un numero valido entre 1 y 2");
-                    opcion=0;
+        boolean op=false;
+        while(!op){   
+        if(correo.equals("Admin") && contraseña.equals("GHI_789")){
+            break;
+        }else{
+            op = iniciarSesion(correo,contraseña,system);
+            int opcion=0;
+            System.out.println("Correo o contraseña invalida");
+            while(opcion==0){
+            try{                
+                System.out.println("Desea volver a intentarlo (1) o cerrar el sistema (2)");
+                opcion=Integer.parseInt(sc.nextLine());                
+            }catch(Exception e){
+                System.out.println("Ingrese una opcion valida");
+                opcion=Integer.parseInt(sc.nextLine());
+            }if(opcion==1){
+                System.out.println("Ingrese el correo");
+                correo=sc.nextLine();
+                System.out.println("Ingrese la contraseña");
+                contraseña=sc.nextLine();
+                op=iniciarSesion(correo,contraseña,system);   
+            }else if (opcion==2){
+                System.out.println("Cerrando sistema...");
+                System.exit(0);
+            }else{
+                System.out.println("ingrese un numero valido entre 1 y 2");
+                opcion=0;
                     }   
                 }            
             }
-        }int periodo=ingresoFecha();
+        }
+        
+        int periodo=ingresoFecha();
         if(periodo==1){
-            inicioDeSemestre(correo);
+            inicioDeSemestre(correo,system);
         }else if(periodo==2){
-            mitadDeSemestre(correo);
+            mitadDeSemestre(correo,system);
         }else if(periodo==3){
-            finDeSemetre(correo);
+            finDeSemetre(correo,system);
         }else if(periodo==4){
-            cierreDelSemestre(correo);
+            cierreDelSemestre(correo,system);
         }else{
             System.out.println("Disfrute de sus vacaciones");   
         }
     
     }
 
-    private static boolean iniciarSesion(String correo, String contraseña) {
-        if (correo.equals("")&&contraseña.equals("")){
-            return true;
-            
-        }else{
+    private static boolean iniciarSesion(String correo, String contraseña,SistemaUCR system) {
+        boolean existeCorreo= system.buscarCorreo(correo);
+        if(!existeCorreo){
             return false;
+        }else{
+            boolean contraCorrecta= system.contraseñaCorrecta(correo, contraseña);
+            if(contraCorrecta){
+                return true;
+            }return false;
         }
         
     }
 
-    private static void menuAdmin() {
-        
-    }
+    
 
     private static int ingresoFecha() throws ParseException {
         Scanner sc= new Scanner(System.in);
@@ -302,20 +302,142 @@ public class Taller_2 {
         }
     } 
 
-    private static void inicioDeSemestre(String correo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static void inicioDeSemestre(String correo, SistemaUCR system) {        
+        Scanner sc= new Scanner (System.in);
+        int variable = system.tipoPersona(correo); //(1)alumno o (2)profesor (3)admin
+        String rut=system.obtenerRut(correo);
+        if (variable==1){//es alumno    
+            System.out.println("Eliga una de las opciones a continuacion: ");
+            System.out.println("1) Inscripcion de asignaturas");
+            System.out.println("2) Eliminacion de asignaturas");
+            int opcion=0;
+            while(opcion!=1 && opcion!=2){
+            try{
+                System.out.println("Ingrese un numero entre 1 y 2");
+                opcion=Integer.parseInt(sc.nextLine());
+            }catch(Exception e){
+                System.out.println("Por favor solo numeros entre 1 y 2");
+                }
+            }
+            if(opcion==1){
+                System.out.println("\n------------------");
+                System.out.println("Menu de inscripcion de asignaturas");
+                String obligatorias=system.obtenerAsignaturasDisponiblesObligatorias(rut);
+                String opcionales=system.obtenerAsignaturasDisponiblesOpcionales(rut);
+                System.out.println("\n------------------");
+                System.out.println(" 'Obligatorias' ");
+                System.out.println(obligatorias);
+                System.out.println(" 'Opcionales' ");
+                System.out.println(opcionales);
+                System.out.println("Para inscribir una asignatura ingrese el codigo de esta");
+                String codigo=sc.nextLine();
+                String disponibles= system.obtenerParalelosDisponibles(obligatorias);
+                System.out.println("Ingrese el numero de paralelo a elegir");
+                int paralelo=-1;
+                try{
+                       paralelo=Integer.parseInt(sc.nextLine());
+                }catch(Exception e){
+                    System.out.println("Numero invalido");                    
+                }
+                boolean resultado =system.inscribirAsignatura(rut,codigo, paralelo);
+                if(resultado){
+                    System.out.println("Insignatura inscrita correctamente");
+                }
+                
+                
+            }else{
+                System.out.println("\n------------------");
+                System.out.println("Menu de eliminacion de asignaturas");
+                String asignaturasInscritas=system.obtenerAsignaturaInscrita(rut);
+                System.out.println(" Para la eliminacion de una asignatura escriba el codigo en caso de no querer eliminar escriba 1)");
+                String opcion2= sc.nextLine();
+                if (opcion2=="1"){
+                    System.out.println("Cerrando programa");
+                }else{
+                    boolean result =system.eliminarAsignatura(rut, opcion2);
+                    if(result){
+                        System.out.println("Asignatura eliminada con existo");
+                    }
+                }
+            }
+            
+        }else if(variable==2){//es profesor
+            String paralelos=system.obtenerParalelosDisponibles(rut);
+            System.out.println(paralelos);
+            System.out.println("Para ver los alumnos de algun paralelo debe ingresar el numero del paralelo en caso de que no quiera ver ingrese -1: ");
+            int option=-1;
+            try{
+                option=Integer.parseInt(sc.nextLine());
+            }catch(Exception e){
+                System.out.println("numero mal ingresado!");
+            }
+            String alumnosParalelo= system.obtenerAlumnosParalelosProfesor(rut,option);
+            System.out.println(alumnosParalelo);
+        
+        }else{
+            System.out.println("No hay acciones disponibles");
+        }
+        
+        
     }
 
-    private static void mitadDeSemestre(String correo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static void mitadDeSemestre(String correo, SistemaUCR system) {
+        Scanner sc=new Scanner(System.in);
+        int variable = system.tipoPersona(correo); //(1)alumno o (2)profesor (3)admin
+        String rut=system.obtenerRut(correo);
+        if(variable==1){//alumnos
+            System.out.println("\n------------------");
+            System.out.println("Menu de eliminacion de asignaturas");
+            String asignaturasInscritas=system.obtenerAsignaturaInscrita(rut);
+            System.out.println(" Para la eliminacion de una asignatura escriba el codigo en caso de no querer eliminar escriba 1)");
+            String opcion2= sc.nextLine();
+            if (opcion2=="1"){
+                System.out.println("Cerrando programa");
+            }else{
+                boolean result =system.eliminarAsignatura(rut, opcion2);
+                if(result){
+                    System.out.println("Asignatura eliminada con exito");
+        }else{
+            System.out.println("No hay acciones disponibles");
+                }
+            }
+        }
+    }
+    private static void finDeSemetre(String correo, SistemaUCR system) {
+        Scanner sc= new Scanner(System.in);
+        int variable = system.tipoPersona(correo); //(1)alumno o (2)profesor (3)admin
+        String rut=system.obtenerRut(correo);
+        if (variable==2){
+               System.out.println("Menu de ingreso de notas");
+               String disponibles= system.obtenerParalelosProfesor(rut);
+               System.out.println(disponibles);
+               int opcion=-1;
+               while (opcion==-1){
+                   System.out.println("Ingrese el paralelo a elegir");
+                   try{
+                       opcion= Integer.parseInt(sc.nextLine());
+                   }catch(Exception e){
+                       System.out.println("Ingrese un numero valido");
+                       opcion=Integer.parseInt(sc.nextLine());
+                   }
+               } String  alumnosParalelo = system.obtenerAlumnosParalelosProfesor(rut, opcion);
+               System.out.println(alumnosParalelo);
+               //seleccionar alumno
+               //ingresar nota final
+        }else{
+               System.out.println("No hay acciones disponibles");
+        }
+         
     }
 
-    private static void finDeSemetre(String correo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private static void cierreDelSemestre(String correo) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static void cierreDelSemestre(String correo, SistemaUCR system) throws IOException {
+        int variable = system.tipoPersona(correo); //(1)alumno o (2)profesor (3)admin
+        if(variable==3){
+            System.out.println("Menu de administrador");
+            archivoEgresados(system);
+        }else{
+            System.out.println("No hay acciones disponibles");
+        }
     }
     
     private static void archivoEgresados(SistemaUCR system) throws IOException{
