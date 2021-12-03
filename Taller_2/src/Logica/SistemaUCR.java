@@ -46,5 +46,5 @@ public interface SistemaUCR {
     
     public boolean eliminarAlumno ();
     
-    
+    public String sobreescribir();
 }

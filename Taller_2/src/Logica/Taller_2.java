@@ -11,6 +11,7 @@ import java.util.Scanner;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import ucn.*;
 /**
  *
  * @author crist
@@ -31,7 +32,7 @@ public class Taller_2 {
         lecturaEstudiantes(system);
        // menu(system);
         System.out.println("\n------------------");
-        
+                
     }
     
     public static void lecturaEstudiantes(SistemaUCR system)throws IOException{
@@ -315,6 +316,15 @@ public class Taller_2 {
 
     private static void cierreDelSemestre(String correo) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    private static void archivoEgresados(SistemaUCR system) throws IOException{
+        ArchivoSalida archS = new ArchivoSalida("egresados.txt");
+        Registro regSalida = new Registro(1);
+        String salida = system.sobreescribir();
+        regSalida.agregarCampo(salida);
+        
+        archS.writeRegistro(regSalida);
     }
     
     

@@ -152,54 +152,8 @@ public class SistemaUCNImpl implements SistemaUCR {
         
         return false;
     }
-    /*
-    @Override
-    public boolean ingresarAsociarParaleoAsignaturaProfesor(int numeroParalelo, String codigoAsignatura, String rut) {
-       
-        Paralelo paralelo = listaParalelos.buscar(numeroParalelo);
-        if(paralelo != null){
-            Asignatura asignatura = listaAsignaturas.buscar(codigoAsignatura);
-            if(asignatura != null){
-                Persona persona = listaPersonas.buscar(rut);
-                
-                if(persona != null){
-                    if(persona instanceof Profesor){
-                        Profesor profesor = (Profesor) persona;
-                        if(asignatura instanceof AsignaturaObligatoria){
-                            AsignaturaObligatoria asigOb = (AsignaturaObligatoria) asignatura;                            
-                            paralelo.setAsignatura(asigOb.getCodigoAsignatura());
-                            paralelo.setProfesor(profesor.getRutPersona());
-                            profesor.getListaParalelos().ingresar(paralelo);
-                            profesor.getListaAsignaturas().ingresar(asigOb);
-                            return true;
-                        }
-                        else {
-                            AsignaturaOpcional asigOp = (AsignaturaOpcional) asignatura;
-                            if (paralelo.getAsignatura() == null){                                
-                                paralelo.setAsignatura(asigOp.getCodigoAsignatura());
-                                paralelo.setProfesor(profesor.getRutPersona());
-                                profesor.getListaParalelos().ingresar(paralelo);
-                                profesor.getListaAsignaturas().ingresar(asigOp);
-                                return true;
-                            }else{
-                                throw new NullPointerException("El paralelo ya tiene una asignatura asignada !");
-                            }
-                        }
-                        
-                        
-                    }
-                }else{
-                    throw new NullPointerException("La persona no existe !");
-                }
-            }else{
-                throw new NullPointerException("La asignatura no existe !");
-            }
-        }else{
-            throw new NullPointerException("El paralelo no ha sido encontrado !");
-        }
-        return false;
-    }
-    */
+    
+    
     @Override
     public String obtenerAsignaturasDisponiblesObligatorias(String rut) {
         String dato = "";
@@ -533,6 +487,7 @@ public class SistemaUCNImpl implements SistemaUCR {
             if(persona instanceof Alumno){
                 Alumno alumno = (Alumno) persona;
                 if(alumno.getNivelAlumno() == 10){
+                    listaPersonasEliminadas.ingresar(alumno);
                     for (int j = 0; j < listaParalelos.getCantParalelos(); j++) {
                         Paralelo paralelo = listaParalelos.getParaleloI(j);
                         ListaPersonas lpersonas = paralelo.getListaPersonas();
@@ -552,4 +507,18 @@ public class SistemaUCNImpl implements SistemaUCR {
         }
         return false;
     }
+    
+    
+    @Override
+    public String sobreescribir(){
+        String salida = "";
+        
+        for (int i = 0; i < listaPersonasEliminadas.getCantPersonas(); i++) {
+            salida +=listaPersonasEliminadas.getPersonaI(i).getRutPersona();
+        }
+        return salida;
+        
+    }
+    
+    
 }
