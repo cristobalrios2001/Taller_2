@@ -496,12 +496,12 @@ public class SistemaUCNImpl implements SistemaUCR {
                                 listaPersonasEliminadas.ingresar(alumno);
                                 paralelo.getListaPersonas().eliminar(alumno.getRutPersona());
                                 listaPersonas.eliminar(alumno.getRutPersona());
+                                paralelo.setCupoParalelo(paralelo.getCupoParalelo()-1);
                                 return true;
                             }
                         }
                         
                     }
-                    return true;
                 }
             }
         }
@@ -520,6 +520,7 @@ public class SistemaUCNImpl implements SistemaUCR {
         
     }
     
+    @Override
     public boolean buscarCorreo(String correo){
         Persona p= listaPersonas.buscarCorreo(correo);
         if(p==null){
@@ -530,6 +531,7 @@ public class SistemaUCNImpl implements SistemaUCR {
         
     }
     
+    @Override
     public boolean contraseñaCorrecta(String correo, String contraseña){
         Persona p= listaPersonas.buscarCorreo(correo);
          if(p!=null){
@@ -543,11 +545,13 @@ public class SistemaUCNImpl implements SistemaUCR {
     }
     
     
+    @Override
     public String obtenerRut(String correo){
         Persona p = listaPersonas.buscarCorreo(correo);
         return p.getRutPersona();
     }
     
+    @Override
     public int tipoPersona(String correo){
         Persona p= listaPersonas.buscarCorreo(correo);
         if(p instanceof Alumno){

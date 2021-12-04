@@ -18,14 +18,15 @@ public class Taller_2 {
     public static void main(String[] args) throws IOException, ParseException {
         SistemaUCR system =new SistemaUCNImpl();
         lecturaAsignatura(system);        
-        System.out.println("\n------------------");
+        
         lecturaProfesor(system);        
-        System.out.println("\n------------------");
+        
         lecturaParalelo(system);
-        System.out.println("\n------------------");
+        
         lecturaEstudiantes(system);
-       // menu(system);
-        System.out.println("\n------------------");
+        
+        menu(system);
+       
                 
     }
     
@@ -278,7 +279,7 @@ public class Taller_2 {
                 inputDate=dateFormat.parse(date);
                 confirmacion=true;
             }
-             catch(Exception e){
+             catch(ParseException e){
                     System.out.println("formato invalido ");
                       
                     System.out.println("Ingrese fecha con formato yyyy-MM-dd");
@@ -315,23 +316,20 @@ public class Taller_2 {
             try{
                 System.out.println("Ingrese un numero entre 1 y 2");
                 opcion=Integer.parseInt(sc.nextLine());
-            }catch(Exception e){
+            }catch(NumberFormatException e){
                 System.out.println("Por favor solo numeros entre 1 y 2");
                 }
             }
             if(opcion==1){
                 System.out.println("\n------------------");
-                System.out.println("Menu de inscripcion de asignaturas");
-                String obligatorias=system.obtenerAsignaturasDisponiblesObligatorias(rut);
-                String opcionales=system.obtenerAsignaturasDisponiblesOpcionales(rut);
+                System.out.println("Menu de inscripcion de asignaturas");                
                 System.out.println("\n------------------");
-                System.out.println(" 'Obligatorias' ");
-                System.out.println(obligatorias);
+                System.out.println(system.obtenerAsignaturasDisponiblesObligatorias(rut));
                 System.out.println(" 'Opcionales' ");
-                System.out.println(opcionales);
+                System.out.println(system.obtenerAsignaturasDisponiblesOpcionales(rut));
                 System.out.println("Para inscribir una asignatura ingrese el codigo de esta");
                 String codigo=sc.nextLine();
-                String disponibles= system.obtenerParalelosDisponibles(obligatorias);
+                System.out.println(system.obtenerParalelosDisponibles(codigo));
                 System.out.println("Ingrese el numero de paralelo a elegir");
                 int paralelo=-1;
                 try{
@@ -339,31 +337,43 @@ public class Taller_2 {
                 }catch(Exception e){
                     System.out.println("Numero invalido");                    
                 }
-                boolean resultado =system.inscribirAsignatura(rut,codigo, paralelo);
-                if(resultado){
-                    System.out.println("Insignatura inscrita correctamente");
+                
+                try{
+                    boolean resultado = system.inscribirAsignatura(rut,codigo, paralelo);
+                    
+                    if(resultado){
+                        System.out.println("Insignatura inscrita correctamente");
+                    }
+                    
+                }catch(Exception ex){
+                    System.out.println(ex.getMessage());
                 }
+                
                 
                 
             }else{
                 System.out.println("\n------------------");
-                System.out.println("Menu de eliminacion de asignaturas");
-                String asignaturasInscritas=system.obtenerAsignaturaInscrita(rut);
+                System.out.println("Menu de eliminacion de asignaturas");                
+                System.out.println(system.obtenerAsignaturaInscrita(rut));
                 System.out.println(" Para la eliminacion de una asignatura escriba el codigo en caso de no querer eliminar escriba 1)");
                 String opcion2= sc.nextLine();
                 if (opcion2=="1"){
                     System.out.println("Cerrando programa");
                 }else{
-                    boolean result =system.eliminarAsignatura(rut, opcion2);
-                    if(result){
-                        System.out.println("Asignatura eliminada con existo");
+                    try{
+                        boolean result =system.eliminarAsignatura(rut, opcion2);
+                        if(result){
+                            System.out.println("Asignatura eliminada con existo");
+                        }
+                    }catch(Exception ex){
+                        System.out.println(ex.getMessage());
                     }
+                    
                 }
             }
             
         }else if(variable==2){//es profesor
-            String paralelos=system.obtenerParalelosDisponibles(rut);
-            System.out.println(paralelos);
+            System.out.println(system.obtenerParalelosDisponibles(rut));
             System.out.println("Para ver los alumnos de algun paralelo debe ingresar el numero del paralelo en caso de que no quiera ver ingrese -1: ");
             int option=-1;
             try{
@@ -371,8 +381,7 @@ public class Taller_2 {
             }catch(Exception e){
                 System.out.println("numero mal ingresado!");
             }
-            String alumnosParalelo= system.obtenerAlumnosParalelosProfesor(rut,option);
-            System.out.println(alumnosParalelo);
+            System.out.println(system.obtenerAlumnosParalelosProfesor(rut,option));
         
         }else{
             System.out.println("No hay acciones disponibles");
@@ -387,44 +396,64 @@ public class Taller_2 {
         String rut=system.obtenerRut(correo);
         if(variable==1){//alumnos
             System.out.println("\n------------------");
-            System.out.println("Menu de eliminacion de asignaturas");
-            String asignaturasInscritas=system.obtenerAsignaturaInscrita(rut);
+            System.out.println("Menu de eliminacion de asignaturas");            
+            System.out.println(system.obtenerAsignaturaInscrita(rut));
             System.out.println(" Para la eliminacion de una asignatura escriba el codigo en caso de no querer eliminar escriba 1)");
             String opcion2= sc.nextLine();
             if (opcion2=="1"){
                 System.out.println("Cerrando programa");
             }else{
-                boolean result =system.eliminarAsignatura(rut, opcion2);
-                if(result){
-                    System.out.println("Asignatura eliminada con exito");
-        }else{
-            System.out.println("No hay acciones disponibles");
+                try{
+                    boolean result =system.eliminarAsignatura(rut, opcion2);
+                    if(result){
+                        System.out.println("Asignatura eliminada con exito");
+                    }else{
+                        System.out.println("No hay acciones disponibles");
+                    }
+                }catch(Exception ex){
+                    System.out.println(ex.getMessage());
                 }
+                
             }
         }
     }
+    
     private static void finDeSemetre(String correo, SistemaUCR system) {
         Scanner sc= new Scanner(System.in);
         int variable = system.tipoPersona(correo); //(1)alumno o (2)profesor (3)admin
         String rut=system.obtenerRut(correo);
-        if (variable==2){
-               System.out.println("Menu de ingreso de notas");
-               String disponibles= system.obtenerParalelosProfesor(rut);
-               System.out.println(disponibles);
-               int opcion=-1;
-               while (opcion==-1){
-                   System.out.println("Ingrese el paralelo a elegir");
-                   try{
-                       opcion= Integer.parseInt(sc.nextLine());
-                   }catch(Exception e){
-                       System.out.println("Ingrese un numero valido");
-                       opcion=Integer.parseInt(sc.nextLine());
-                   }
-               } String  alumnosParalelo = system.obtenerAlumnosParalelosProfesor(rut, opcion);
-               System.out.println(alumnosParalelo);
-               //seleccionar alumno
-               //ingresar nota final
-        }else{
+        if (variable==2){            
+            System.out.println(system.obtenerParalelosProfesor(rut));
+            System.out.println();
+            int opcion=-1;
+            while (opcion==-1){
+                System.out.println("Ingrese el paralelo a elegir");
+                try{
+                    opcion= Integer.parseInt(sc.nextLine());
+                }catch(Exception e){
+                    System.out.println("Ingrese un numero valido");
+                    opcion=Integer.parseInt(sc.nextLine());
+                }
+            }             
+            System.out.println(system.obtenerAlumnosParalelosProfesor(rut, opcion));
+            //seleccionar alumno
+            System.out.println("Ingresar rut Alumno");
+            String rutAlumnoNota = sc.next();
+            System.out.println("Ingrese codigo asignatura");
+            String codAsignatura = sc.next();
+            System.out.println("Ingrese nota final: ");
+            Double notaFinal = Double.parseDouble(sc.next());
+            try{
+                boolean notaIngreso = system.ingresarNotaFinal(codAsignatura, rutAlumnoNota,notaFinal);
+                if(notaIngreso){
+                    System.out.println("Nota ingresada");
+                }
+            }catch(Exception ex){
+                System.out.println(ex.getMessage());
+            }
+        }   
+            
+        else{
                System.out.println("No hay acciones disponibles");
         }
          
@@ -443,8 +472,7 @@ public class Taller_2 {
     private static void archivoEgresados(SistemaUCR system) throws IOException{
         ArchivoSalida archS = new ArchivoSalida("egresados.txt");
         Registro regSalida = new Registro(1);
-        String salida = system.sobreescribir();
-        regSalida.agregarCampo(salida);
+        regSalida.agregarCampo(system.sobreescribir());
         
         archS.writeRegistro(regSalida);
     }
